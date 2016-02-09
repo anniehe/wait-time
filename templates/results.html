@@ -7,19 +7,22 @@
 <body>
   <!-- Search Form -->
   <form action="/search" method="GET">
-    <input type="text" name="keyword" placeholder="Restaurant/Keyword">
+    <input type="text" name="keyword" placeholder="Restaurant/Food">
     <input type="text" name="location" placeholder="Location/City/Zipcode">
-    <input type="submit" value="Let's see!">
+    <input type="submit" value="Find wait time!">
   </form>
 
   <!-- Results -->
+
+  <!-- Each item is a dictionary of business info in result (list of businesses) -->
   {% for item in result %}
       <div>
         <h2>{{ item['name'] }}</h2>
 
         <p>{{ item['location']['address'][0] }}, {{ item['location']['city'] }}, {{ item['location']['state_code'] }} {{ item['location']['postal_code'] }}</p>
 
-        <p><img src={{ item['rating_img_url'] }}> {{ item['review_count'] }} reviews</p>
+        <p><img src="{{ item['rating_img_url'] }}"/> {{ item['review_count'] }} reviews</p>
+        <p><a href="{{ item['url'] }}"><img src="/static/img/yelp_review_btn_light.png"/></a></p>
         <br>
       </div>
   {% endfor %}

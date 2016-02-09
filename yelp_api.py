@@ -11,10 +11,10 @@ token_secret = os.environ['YELP_TOKEN_SECRET']
 yelp_api = YelpAPI(consumer_key, consumer_secret, token, token_secret)
 
 
-def yelp_search(term, location='San Francisco'):
-    search_results = yelp_api.search_query(term=term, location=location)
+def yelp_search(term='Sanraku', location='San Francisco'):
+    search_results = yelp_api.search_query(term=term, location=location, limit=2)
 
-    # pprint.pprint(search_results)
+    pprint.pprint(search_results)
 
     # name = search_results['businesses'][0]['name']
     # print "NAME", name
@@ -33,4 +33,4 @@ def yelp_search(term, location='San Francisco'):
 
     # location = search_results['businesses'][0]['location']['display_address']
 
-    return search_results
+    # return search_results
