@@ -23,7 +23,15 @@
 
         <p><img src="{{ item['rating_img_url'] }}"/> {{ item['review_count'] }} reviews</p>
         <p><a href="{{ item['url'] }}"><img src="/static/img/yelp_review_btn_light.png"/></a></p>
+        <p>Hours 
+            <ul>{% for day in item['opening_hours'] %}
+                <li>{{ day }}</li>
+            {% endfor %}
+            </ul>
+        </p>
+        <p>{{ item['open_now'] }}</p>
         <br>
+
       </div>
   {% endfor %}
 

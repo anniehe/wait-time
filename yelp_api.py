@@ -33,4 +33,4 @@ def yelp_search(term='Sanraku', location='San Francisco'):
 
     # location = search_results['businesses'][0]['location']['display_address']
 
-    # return search_results
+    return search_results
