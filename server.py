@@ -25,8 +25,7 @@ def display_search_results():
 
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
-                                           category_filter='food,restaurants',
-                                           limit=4)
+                                           category_filter='food,restaurants')
 
     # result is the list of businesses
     result = search_results['businesses']
@@ -35,36 +34,39 @@ def display_search_results():
     for item in result:
 
         name = item['name']
-        location_lat = str(item['location']['coordinate']['latitude'])
-        location_lng = str(item['location']['coordinate']['longitude'])
         address = item['location']['address'][0]
         city = item['location']['city']
+        location_lat = item['location']['coordinate']['latitude']
+        location_lng = item['location']['coordinate']['longitude']
 
-        keyword = name + " " + address + " " + city
-        location = location_lat + "," + location_lng
+        keyword = "%s %s %s" % (name, address, city)
+        location = "%f,%f" % (location_lat, location_lng)
 
         # print "KEYWORD", keyword
         # print "LOCATION", location
 
-        # Get place_id for the business result from Yelp
+        # Get place_id from Google API for the business result from Yelp
         place_id = get_place_id(keyword, location)
+
+        # print "PLACE ID", place_id
 
         # If there's a match, add opening_hours_info and open_now to the dictionary
         if not place_id:
-            opening_hours_info = "not available"
+            opening_hours_info = None
             open_now = "Open now unknown"
         else:
-            ##### Take off limit and ERROR right here after refactoring google_api code #####
-            opening_hours_info, open_now = get_opening_hours_info(place_id)
-            if not opening_hours_info:
-                opening_hours_info = "not available"
+            # print "GET OPENING HOURS FROM PLACE ID", get_opening_hours_info(place_id)
 
-            if open_now is None:
-                open_now = "Open unknown"
-            elif open_now is True:
-                open_now = "Open now"
-            elif open_now is False:
-                open_now = "Closed"
+            # If there are opening hours information for the place id
+            if get_opening_hours_info(place_id):
+                opening_hours_info, open_now = get_opening_hours_info(place_id)
+                if open_now is True:
+                    open_now = "Open now"
+                elif open_now is False:
+                    open_now = "Closed"
+            else:
+                opening_hours_info = None
+                open_now = "Open now unknown"
 
         item['opening_hours'] = opening_hours_info
         item['open_now'] = open_now
