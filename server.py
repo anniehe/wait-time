@@ -17,15 +17,15 @@ def index():
 def display_search_results():
     """Display search results."""
 
-    search_term = request.args.get('keyword')
+    search_term = request.args.get("keyword")
 
-    location_term = request.args.get('location')
+    location_term = request.args.get("location")
     if not location_term:
-        location_term = 'San Francisco'
+        location_term = "San Francisco"
 
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
-                                           category_filter='food,restaurants')
+                                           category_filter="food,restaurants")
 
     # result is the list of businesses
     result = search_results['businesses']
