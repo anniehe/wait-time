@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 
 # This is the connection to the PostgreSQL database
 db = SQLAlchemy()
@@ -7,7 +8,7 @@ db = SQLAlchemy()
 ##############################################################################
 # Model definitions
 
-class Wait_time(db.Model):
+class WaitTime(db.Model):
     """Wait time information."""
 
     __tablename__ = "wait_times"
@@ -15,10 +16,9 @@ class Wait_time(db.Model):
     wait_time_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     yelp_id = db.Column(db.String(200), db.ForeignKey("restaurants.yelp_id"))
     party_size = db.Column(db.Integer, nullable=True)
-    quoted_hr = db.Column(db.Integer, nullable=False)
-    quoted_min = db.Column(db.Integer, nullable=False)
+    quoted_minutes = db.Column(db.Integer, nullable=False)
     parties_ahead = db.Column(db.Integer, nullable=True)
-    timestamp = db.Column(db.DateTime, nullable=False)
+    timestamp = db.Column(db.DateTime, default=func.utc_timestamp())
 
     restaurant = db.relationship("Restaurant",
                                  backref=db.backref("wait_times"))
@@ -26,8 +26,8 @@ class Wait_time(db.Model):
     def __repr__(self):
         """Show information about the reported wait."""
 
-        return "<WaitTime wait_time_id=%s yelp_id=%s quoted_hr=%s quoted_min=%s>" % (
-            self.wait_time_id, self.yelp_id, self.quoted_hr, self.quoted_min)
+        return "<WaitTime wait_time_id=%s yelp_id=%s quoted_minutes=%s>" % (
+            self.wait_time_id, self.yelp_id, self.quoted_minutes)
 
 
 class Restaurant(db.Model):
@@ -51,7 +51,6 @@ class Restaurant(db.Model):
             self.yelp_id, self.restaurant_name, self.rating, self.review_count)
 
 
-
 ##############################################################################
 # Helper functions
 
@@ -61,6 +60,8 @@ def connect_to_db(app):
     # Configure to use our PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///wait'
     app.config['SQLAlCHEMY_ECHO'] = True
+    # If want to tracking modifications, set it to True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
 

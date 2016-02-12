@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request
+# from flask_debugtoolbar import DebugToolbarExtension
+from model import WaitTime, Restaurant, connect_to_db, db
 from yelpapi import YelpAPI
-from google_api import *
+from google_api import get_place_id, get_opening_hours_info
 import os
+import humanize
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -30,14 +34,14 @@ def display_search_results():
     # result is the list of businesses
     result = search_results['businesses']
 
-    # Each item is a dictionary of business info in result (list of businesses)
-    for item in result:
+    # Each business is a dictionary
+    for business in result:
 
-        name = item['name']
-        address = item['location']['address'][0]
-        city = item['location']['city']
-        location_lat = item['location']['coordinate']['latitude']
-        location_lng = item['location']['coordinate']['longitude']
+        name = business['name']
+        address = business['location']['address'][0]
+        city = business['location']['city']
+        location_lat = business['location']['coordinate']['latitude']
+        location_lng = business['location']['coordinate']['longitude']
 
         keyword = "%s %s %s" % (name, address, city)
         location = "%f,%f" % (location_lat, location_lng)
@@ -68,8 +72,30 @@ def display_search_results():
                 opening_hours_info = None
                 open_now = "Open now unknown"
 
-        item['opening_hours'] = opening_hours_info
-        item['open_now'] = open_now
+        business['opening_hours'] = opening_hours_info
+        business['open_now'] = open_now
+
+        yelp_id = business['id']
+
+        # The most recent wait time info for a restaurant
+        wait_info = WaitTime.query.filter_by(yelp_id=yelp_id).order_by('timestamp desc, wait_time_id desc').first()
+
+        # If there is wait time info for a restaurant, add to dictionary
+        if wait_info:
+            business['quoted_wait_time'] = wait_info.quoted_minutes
+            business['party_size'] = wait_info.party_size
+            business['parties_ahead'] = wait_info.parties_ahead
+            business['timestamp'] = humanize.naturaltime(datetime.utcnow() - wait_info.timestamp)
+        else:
+            business['quoted_wait_time'] = "Not available"
+            business['party_size'] = "Not available"
+            business['parties_ahead'] = "Not available"
+            business['timestamp'] = "Not available"
+
+    # Sort by quoted_wait_time (shortest first)
+    # ADD SORT FEATURE IN FORM:
+    # if request.args.get('sort') == quoted_wait_time, then run code below
+    # result.sort(key=lambda business: business['quoted_wait_time'])
 
     return render_template("results.html", result=result)
 
@@ -86,5 +112,9 @@ yelp_api = YelpAPI(consumer_key, consumer_secret, token, token_secret)
 
 if __name__ == "__main__":
     app.debug = True
+
+    connect_to_db(app)
+
+    # DebugToolbarExtension(app)
 
     app.run()

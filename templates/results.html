@@ -14,20 +14,37 @@
 
   <!-- Results -->
 
-  <!-- Each item is a dictionary of business info in result (list of businesses) -->
-  {% for item in result %}
+  <!-- Each business is a dictionary in result (list of businesses) -->
+  {% for business in result %}
     <div>
-      <h2>{{ item['name'] }}</h2>
+      <h2>{{ business['name'] }}</h2>
 
-      <p>{{ item['location']['address'][0] }}, {{ item['location']['city'] }}, {{ item['location']['state_code'] }} {{ item['location']['postal_code'] }}</p>
-
-      <p><img src="{{ item['rating_img_url'] }}"/> {{ item['review_count'] }} reviews</p>
-      <p><a href="{{ item['url'] }}"><img src="/static/img/yelp_review_btn_light.png"/></a></p>
+      <p>{{ business['location']['address'][0] }}, {{ business['location']['city'] }}, {{ business['location']['state_code'] }} {{ business['location']['postal_code'] }}</p>
       
-      {% if item['opening_hours'] %}
+      <p>Quoted Wait Time: 
+        {% if business['quoted_wait_time'] != "Not available" %}
+          {% if business['quoted_wait_time'] <= 60 %}
+            {{ business['quoted_wait_time'] }} min
+          {% elif business['quoted_wait_time'] > 60 and business['quoted_wait_time'] % 60 == 0 %}
+            {{ business['quoted_wait_time'] // 60 }} hrs
+          {% elif business['quoted_wait_time'] > 60 and business['quoted_wait_time'] % 60 != 0 %}
+            {{ business['quoted_wait_time'] // 60 }} hrs {{ business['quoted_wait_time'] % 60 }} min
+          {% endif %}
+        {% else %}
+          {{ business['quoted_wait_time'] }}
+        {% endif %}
+      </p>
+      <p>Party Size: {{ business['party_size'] }}</p>
+      <p>Parties Ahead: {{ business['parties_ahead'] }}</p>
+      <p>Reported: {{ business['timestamp'] }}</p>
+
+      <p><img src="{{ business['rating_img_url'] }}"/> {{ business['review_count'] }} reviews</p>
+      <p><a href="{{ business['url'] }}" target="_blank"><img src="/static/img/yelp_review_btn_light.png"/></a></p>
+      
+      {% if business['opening_hours'] %}
         <p>Hours
         <ul>
-          {% for day in item['opening_hours'] %}
+          {% for day in business['opening_hours'] %}
             <li>{{ day }}</li>
           {% endfor %}
         </ul>
@@ -36,7 +53,7 @@
         <p>Hours not available</p>
       {% endif %}
 
-      <p>{{ item['open_now'] }}</p>
+      <p>{{ business['open_now'] }}</p>
     <br>
 
   </div>
