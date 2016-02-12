@@ -78,7 +78,10 @@ def display_search_results():
         yelp_id = business['id']
 
         # The most recent wait time info for a restaurant
-        wait_info = WaitTime.query.filter_by(yelp_id=yelp_id).order_by('timestamp desc, wait_time_id desc').first()
+        wait_info = (WaitTime.query.filter_by(yelp_id=yelp_id)
+                     .order_by(WaitTime.timestamp.desc(), WaitTime.wait_time_id.desc())
+                     .first()
+                     )
 
         # If there is wait time info for a restaurant, add to dictionary
         if wait_info:
