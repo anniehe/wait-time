@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
+from datetime import datetime
 
 # This is the connection to the PostgreSQL database
 db = SQLAlchemy()
@@ -14,41 +14,18 @@ class WaitTime(db.Model):
     __tablename__ = "wait_times"
 
     wait_time_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    yelp_id = db.Column(db.String(200), db.ForeignKey("restaurants.yelp_id"))
+    yelp_id = db.Column(db.String(200))
     party_size = db.Column(db.Integer, nullable=True)
     quoted_minutes = db.Column(db.Integer, nullable=False)
     parties_ahead = db.Column(db.Integer, nullable=True)
-    timestamp = db.Column(db.DateTime, default=func.utc_timestamp())
-
-    restaurant = db.relationship("Restaurant",
-                                 backref=db.backref("wait_times"))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow())
+    still_waiting = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         """Show information about the reported wait."""
 
         return "<WaitTime wait_time_id=%s yelp_id=%s quoted_minutes=%s>" % (
             self.wait_time_id, self.yelp_id, self.quoted_minutes)
-
-
-class Restaurant(db.Model):
-    """Restaurant from Yelp."""
-
-    __tablename__ = "restaurants"
-
-    yelp_id = db.Column(db.String(200), primary_key=True)
-    restaurant_name = db.Column(db.String(200), nullable=False)
-    rating = db.Column(db.Float, nullable=False)
-    review_count = db.Column(db.Integer, nullable=False)
-    address = db.Column(db.String(200), nullable=False)
-    city = db.Column(db.String(200), nullable=False)
-    state_code = db.Column(db.String(10), nullable=False)
-    zip_code = db.Column(db.String(10), nullable=False)
-
-    def __repr__(self):
-        """Show information about the restaurant."""
-
-        return "<Restaurant yelp_id=%s restaurant_name=%s rating=%s review_count=%s>" % (
-            self.yelp_id, self.restaurant_name, self.rating, self.review_count)
 
 
 ##############################################################################

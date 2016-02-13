@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
-# from flask_debugtoolbar import DebugToolbarExtension
-from model import WaitTime, Restaurant, connect_to_db, db
+from flask_debugtoolbar import DebugToolbarExtension
+from jinja2 import StrictUndefined
+from model import WaitTime, connect_to_db, db
 from yelpapi import YelpAPI
 from google_api import get_place_id, get_opening_hours_info
 import os
@@ -8,6 +9,12 @@ import humanize
 from datetime import datetime
 
 app = Flask(__name__)
+
+# Required to use Flask sessions and the debug toolbar
+app.secret_key = "SHHHHH"
+
+# This raises an error if you use an undefined variable in Jinja2.
+app.jinja_env.undefined = StrictUndefined
 
 
 @app.route("/")
@@ -78,8 +85,9 @@ def display_search_results():
         yelp_id = business['id']
 
         # The most recent wait time info for a restaurant
+        # If same timestamp, fetch the largest quoted wait time
         wait_info = (WaitTime.query.filter_by(yelp_id=yelp_id)
-                     .order_by(WaitTime.timestamp.desc(), WaitTime.wait_time_id.desc())
+                     .order_by(WaitTime.timestamp.desc(), WaitTime.quoted_minutes.desc())
                      .first()
                      )
 
@@ -118,6 +126,6 @@ if __name__ == "__main__":
 
     connect_to_db(app)
 
-    # DebugToolbarExtension(app)
+    DebugToolbarExtension(app)
 
     app.run()

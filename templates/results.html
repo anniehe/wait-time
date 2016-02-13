@@ -23,12 +23,17 @@
       
       <p>Quoted Wait Time: 
         {% if business['quoted_wait_time'] != "Not available" %}
-          {% if business['quoted_wait_time'] <= 60 %}
+          <!-- e.g. 45 min -->
+          {% if business['quoted_wait_time'] < 60 %}
             {{ business['quoted_wait_time'] }} min
-          {% elif business['quoted_wait_time'] > 60 and business['quoted_wait_time'] % 60 == 0 %}
-            {{ business['quoted_wait_time'] // 60 }} hrs
-          {% elif business['quoted_wait_time'] > 60 and business['quoted_wait_time'] % 60 != 0 %}
-            {{ business['quoted_wait_time'] // 60 }} hrs {{ business['quoted_wait_time'] % 60 }} min
+          <!-- e.g. 1 hr or 2 hr -->
+          {% elif business['quoted_wait_time'] >= 60 and 
+              business['quoted_wait_time'] % 60 == 0 %}
+            {{ business['quoted_wait_time'] // 60 }} hr
+          <!-- e.g. 2 hr 15 min -->
+          {% elif business['quoted_wait_time'] > 60 and 
+              business['quoted_wait_time'] % 60 != 0 %}
+            {{ business['quoted_wait_time'] // 60 }} hr {{ business['quoted_wait_time'] % 60 }} min
           {% endif %}
         {% else %}
           {{ business['quoted_wait_time'] }}
