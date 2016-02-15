@@ -1,10 +1,13 @@
-<!doctype html>
-<html>
-<head>
-  <title>What's the Wait Time?</title>
-</head>
+{% extends 'base.html' %}
+{% block head %}
 
-<body>
+  <title>What's the Wait Time?</title>
+
+{% endblock %}
+
+
+{% block body %}
+
   <h1>What's the wait time?</h1>
 
   <form action="/search" method="GET">
@@ -12,6 +15,5 @@
     <input type="text" name="location" placeholder="Location/City/Zipcode">
     <input type="submit" value="Let's see!">
   </form>
-  
-</body>
-</html
+
+{% endblock %}
