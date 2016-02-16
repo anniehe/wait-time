@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import WaitTime, connect_to_db, db
@@ -108,7 +108,43 @@ def display_search_results():
     # if request.args.get('sort') == quoted_wait_time, then run code below
     # result.sort(key=lambda business: business['quoted_wait_time'])
 
-    return render_template("results.html", result=result)
+    return render_template("results.html", result=result, key=browser_key)
+
+
+@app.route("/results.json")
+def get_results_info():
+    """Return search results info as JSON."""
+
+    search_term = request.args.get("keyword")
+
+    location_term = request.args.get("location")
+    if not location_term:
+        location_term = "San Francisco"
+
+    search_results = yelp_api.search_query(term=search_term,
+                                           location=location_term,
+                                           category_filter="food,restaurants")
+
+    # result is a list of dictionaries of businesses
+    result = search_results['businesses']
+    results_dict = {}
+
+    # Each business is a dictionary of business info
+    for business in result:
+        yelp_id = business['id']
+        name = business['name']
+        location_lat = business['location']['coordinate']['latitude']
+        location_lng = business['location']['coordinate']['longitude']
+
+        results_dict[yelp_id] = {'name': name,
+                                 'location_lat': location_lat,
+                                 'location_lng': location_lng}
+
+    return jsonify(results_dict)
+
+
+### GOOGLE API ###
+browser_key = os.environ['GOOGLE_BROWSER_KEY']
 
 
 ### YELP API ###
