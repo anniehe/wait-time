@@ -6,19 +6,50 @@ function initMap() {
 
   var infoWindow = new google.maps.InfoWindow({map: map});
 
-  var key, restaurant, name, locationLat, locationLng, marker;
+  var key, restaurant, name, locationLat, locationLng, marker, html;
+  var address, phone, image;
+  var city, stateCode, zipCode;
 
   for (key in resultObject['result']) {
     restaurant = resultObject['result'][key];
     name = resultObject['result'][key]['name'];
     locationLat = resultObject['result'][key]['location']['coordinate']['latitude'];
     locationLng = resultObject['result'][key]['location']['coordinate']['longitude'];
+    address = resultObject['result'][key]['location']['address'][0];
+    city = resultObject['result'][key]['location']['city'];
+    // stateCode = resultObject['result'][key]['location']['state_code'];
+    // zipCode = resultObject['result'][key]['location']['postal_code'];
+    phone = resultObject['result'][key]['display_phone'];
+    image = resultObject['result'][key]['image_url'];
 
     // Define the markers for each restaurant
     marker = new google.maps.Marker({
         position: new google.maps.LatLng(locationLat, locationLng),
         map: map,
         title: name
+    });
+
+    // Define the content of the infoWindow
+    html = (
+      '<div>' +
+        '<img src="' + image + '" alt="restaurant">' +
+        '<p><b>' + name + '</b></p>' +
+        '<p>' + address + '</p>' +
+        '<p>' + phone + '</p>' +
+        // '<p>' + city + ', ' + stateCode + ' ' + zipCode + '</p>' +
+      '</div>');
+
+    bindInfoWindow(marker, map, infoWindow, html);
+  }
+
+  // When a marker is clicked, it closes any currently open infoWindows
+  // Sets the content for the new marker with the content passed through
+  // Then it opens the infoWindow with the new content on the marker that's clicked
+  function bindInfoWindow(marker, map, infoWindow, html) {
+    google.maps.event.addListener(marker, 'click', function() {
+      infoWindow.close();
+      infoWindow.setContent(html);
+      infoWindow.open(map, marker);
     });
   }
 
