@@ -1,11 +1,11 @@
 function initMap() {
-  // Instantiate a map object and specify DOM element for displaying map
+  // Instantiate a map object and specify DOM element for display
   var map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 37.7886334, lng: -122.4114752},
     zoom: 10
   });
 
-  var infoWindow = new google.maps.InfoWindow({map: map});
+  var infoWindow = new google.maps.InfoWindow();
+  var bounds = new google.maps.LatLngBounds();
 
   var key, restaurant, yelpId, name, image, ratingImage, reviewCount;
   var address, city, stateCode, zipCode, phone, status;
@@ -38,6 +38,9 @@ function initMap() {
         title: name
     });
 
+    // Extend bounds to include each marker's position
+    bounds.extend(marker.position);
+
     // Define the content of the infoWindow for each restaurant
     html = (
       '<div>' +
@@ -51,35 +54,41 @@ function initMap() {
 
     bindInfoWindow(marker, map, infoWindow, html);
     jumpToResult(marker, yelpId);
+    tryGeolocation(infoWindow, map, bounds);
   }
 
+  // Fit map to bounds
+  map.fitBounds(bounds);
+  // Center map to bounds
+  map.setCenter(bounds.getCenter());
+}
+
+
+// Process infoWindows for restaurants
+function bindInfoWindow(marker, map, infoWindow, html) {
   // On mouseover, the content for the marker is set and the infoWindow is opened.
+  google.maps.event.addListener(marker, 'mouseover', function() {
+    infoWindow.setContent(html);
+    infoWindow.open(map, marker);
+  });
   // On mouseout, the infoWindow is closed. 
-  function bindInfoWindow(marker, map, infoWindow, html) {
-    google.maps.event.addListener(marker, 'mouseover', function() {
-      infoWindow.setContent(html);
-      infoWindow.open(map, marker);
-    });
-    google.maps.event.addListener(marker, 'mouseout', function() {
-      infoWindow.close();
-    });
-  }
+  google.maps.event.addListener(marker, 'mouseout', function() {
+    infoWindow.close();
+  });
+}
 
-  // Clicking the marker will jump to the corresponding restaurant on the results page.
-  function jumpToResult(marker, anchor) {
-    google.maps.event.addListener(marker, 'click', function() {
-      window.location = "#" + anchor;
-    });
-  }
 
-  // console.log(resultObject);
-  // console.log(resultObject['result'][0]);
-  // console.log(resultObject['result'][0]['id']);
-  // console.log(resultObject['result'][0]['location']['address'][0]);
-  // console.log(resultObject['result'][0]['location']['coordinate']['latitude']);
-  // console.log(resultObject['result'][0]['location']['coordinate']['longitude']);
+// Clicking the marker will jump to the corresponding restaurant on the results page.
+function jumpToResult(marker, anchor) {
+  google.maps.event.addListener(marker, 'click', function() {
+    window.location = "#" + anchor;
+  });
+}
 
-  // Try HTML5 geolocation
+
+// Try Geolocation
+function tryGeolocation(infoWindow, map, bounds) {
+  // If Geolocation allowed, get current location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
@@ -87,17 +96,28 @@ function initMap() {
         lng: position.coords.longitude
       };
 
-      infoWindow.setPosition(pos);
-      infoWindow.setContent('Current location.');
-      map.setCenter(pos);
+      // Define marker for current location
+      var currentLocationMarker = new google.maps.Marker({
+        position: new google.maps.LatLng(pos.lat, pos.lng),
+        map: map,
+        title: "Current Location",
+        icon: '/static/img/google_map_icon_star.png'
+      });
+
+      // Extend bounds to include current location marker
+      bounds.extend(currentLocationMarker.position);
+      // Fit map to bounds
+      map.fitBounds(bounds);
+
     }, function() {
-      handleLocationError(true, infoWindow, map.getCenter());
+      handleLocationError(true, infoWindow, bounds.getCenter());
     });
   } else {
     // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
+    handleLocationError(false, infoWindow, bounds.getCenter());
   }
 }
+
 
 // Handles Geolocation error
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -106,5 +126,6 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
                         'Error: The Geolocation service failed.' :
                         'Error: Your browser doesn\'t support geolocation.');
 }
+
 
 // google.maps.event.addDomListener(window, 'load', initMap);
