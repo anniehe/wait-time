@@ -45,7 +45,10 @@
     <div id="{{ business['id'] }}">
       <h2>{{ business['name'] }}</h2>
 
-      <p>{{ business['location']['address'][0] }}, {{ business['location']['city'] }}, {{ business['location']['state_code'] }} {{ business['location']['postal_code'] }}</p>
+      <p>{{ business['location']['address'][0] }}<br>
+         {{ business['location']['city'] }}, 
+         {{ business['location']['state_code'] }} 
+         {{ business['location']['postal_code'] }}</p>
       
       <p>Quoted Wait Time: 
         {% if business['quoted_wait_time'] != "Not available" %}

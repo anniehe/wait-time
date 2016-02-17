@@ -6,22 +6,28 @@ function initMap() {
 
   var infoWindow = new google.maps.InfoWindow({map: map});
 
-  var key, restaurant, yelpId, name, locationLat, locationLng, marker, html, anchor;
-  var address, phone, image, ratingImage, reviewCount, status;
+  var key, restaurant, yelpId, name, image, ratingImage, reviewCount;
+  var address, city, stateCode, zipCode, phone, status;
+  var html, marker, locationLat, locationLng;
 
   for (key in resultObject['result']) {
+
     restaurant = resultObject['result'][key];
     yelpId = resultObject['result'][key]['id'];
     name = resultObject['result'][key]['name'];
-    locationLat = resultObject['result'][key]['location']['coordinate']['latitude'];
-    locationLng = resultObject['result'][key]['location']['coordinate']['longitude'];
-    address = resultObject['result'][key]['location']['address'][0];
-    city = resultObject['result'][key]['location']['city'];
-    phone = resultObject['result'][key]['display_phone'];
     image = resultObject['result'][key]['image_url'];
     ratingImage = resultObject['result'][key]['rating_img_url'];
     reviewCount = resultObject['result'][key]['review_count'];
+
+    address = resultObject['result'][key]['location']['address'][0];
+    city = resultObject['result'][key]['location']['city'];
+    stateCode = resultObject['result'][key]['location']['state_code'];
+    zipCode = resultObject['result'][key]['location']['postal_code'];
+    phone = resultObject['result'][key]['display_phone'];
     status = resultObject['result'][key]['open_now'];
+
+    locationLat = resultObject['result'][key]['location']['coordinate']['latitude'];
+    locationLng = resultObject['result'][key]['location']['coordinate']['longitude'];
 
     // Define the markers for each restaurant
     marker = new google.maps.Marker({
@@ -36,7 +42,7 @@ function initMap() {
         '<img src="' + image + '" alt="restaurant">' +
         '<h3><b>' + name + '</b></h3>' +
         '<p><img src="' + ratingImage + '" alt="rating"> ' + reviewCount + ' Reviews on Yelp</p>' +
-        '<p>' + address + '</p>' +
+        '<p>' + address + '<br>' + city + ', ' + stateCode + ' ' + zipCode + '</p>' +
         '<p>' + phone + '</p>' +
         '<p><i>' + status + '</i></p>' +
       '</div>');
@@ -57,6 +63,7 @@ function initMap() {
     });
   }
 
+  // Clicking the marker will jump to the corresponding restaurant on the results page.
   function jumpToResult(marker, anchor) {
     google.maps.event.addListener(marker, 'click', function() {
       window.location = "#" + anchor;
