@@ -5,6 +5,14 @@ function initMap() {
   });
   var infoWindow = new google.maps.InfoWindow({map: map});
 
+
+  console.log(result_object);
+  console.log(result_object['result'][0]);
+  console.log(result_object['result'][0]['id']);
+  // console.log(result_object['result'][0]['location']['address'][0]);
+  // console.log(result_object['result'][0]['location']['coordinate']['latitude']);
+  // console.log(result_object['result'][0]['location']['coordinate']['longitude']);
+
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {

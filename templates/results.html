@@ -15,6 +15,9 @@
   </style>
 
   <script src="https://code.jquery.com/jquery.js"></script>
+  <script>
+    var result_object = {{ result_dict|tojson|safe }};
+  </script>
   <script src="/static/js/map.js"></script>
   <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap">
@@ -87,11 +90,5 @@
 
   </div>
   {% endfor %}
-
-  <script>
-    $.get("/results.json", function(data) {
-      console.log(data);
-    });
-  </script>
 
 {% endblock %}

@@ -1,12 +1,16 @@
 from flask import Flask, render_template, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
+
 from model import WaitTime, connect_to_db, db
+
 from yelpapi import YelpAPI
 from google_api import get_place_id, get_opening_hours_info
 import os
-import humanize
+
 from datetime import datetime
+import humanize
+
 
 app = Flask(__name__)
 
@@ -53,22 +57,15 @@ def display_search_results():
         keyword = "%s %s %s" % (name, address, city)
         location = "%f,%f" % (location_lat, location_lng)
 
-        # print "KEYWORD", keyword
-        # print "LOCATION", location
-
         # Get place_id from Google API for the business result from Yelp
         place_id = get_place_id(keyword, location)
-
-        # print "PLACE ID", place_id
 
         # If there's a match, add opening_hours_info and open_now to the dictionary
         if not place_id:
             opening_hours_info = None
             open_now = "Open now unknown"
         else:
-            # print "GET OPENING HOURS FROM PLACE ID", get_opening_hours_info(place_id)
-
-            # If there are opening hours information for the place id
+            # If there are opening hours info for the place id
             if get_opening_hours_info(place_id):
                 opening_hours_info, open_now = get_opening_hours_info(place_id)
                 if open_now is True:
@@ -103,44 +100,51 @@ def display_search_results():
             business['parties_ahead'] = "Not available"
             business['timestamp'] = "Not available"
 
-    # Sort by quoted_wait_time (shortest first)
-    # ADD SORT FEATURE IN FORM:
+    # ADD SORT FEATURE IN FORM: sort by quoted_wait_time (shortest first)
     # if request.args.get('sort') == quoted_wait_time, then run code below
     # result.sort(key=lambda business: business['quoted_wait_time'])
 
-    return render_template("results.html", result=result, key=browser_key)
+    # result is now a list of businesses with wait time info and hours info added
+    result_dict = {'result': result}
+
+    return render_template("results.html",
+                            result=result,
+                            key=browser_key,
+                            result_dict=result_dict)
 
 
-@app.route("/results.json")
-def get_results_info():
-    """Return search results info as JSON."""
+# @app.route("/results.json")
+# def get_results_info():
+#     """Return search results info as JSON."""
 
-    search_term = request.args.get("keyword")
+#     # NOT GETTING SEARCH TERM AND LOCATION TERM FROM FORM.
 
-    location_term = request.args.get("location")
-    if not location_term:
-        location_term = "San Francisco"
+#     search_term = request.args.get("keyword")
 
-    search_results = yelp_api.search_query(term=search_term,
-                                           location=location_term,
-                                           category_filter="food,restaurants")
+#     location_term = request.args.get("location")
+#     if not location_term:
+#         location_term = "San Francisco"
 
-    # result is a list of dictionaries of businesses
-    result = search_results['businesses']
-    results_dict = {}
+#     search_results = yelp_api.search_query(term=search_term,
+#                                            location=location_term,
+#                                            category_filter="food,restaurants")
 
-    # Each business is a dictionary of business info
-    for business in result:
-        yelp_id = business['id']
-        name = business['name']
-        location_lat = business['location']['coordinate']['latitude']
-        location_lng = business['location']['coordinate']['longitude']
+#     # result is a list of dictionaries of businesses
+#     result = search_results['businesses']
+#     results_dict = {}
 
-        results_dict[yelp_id] = {'name': name,
-                                 'location_lat': location_lat,
-                                 'location_lng': location_lng}
+#     # Each business is a dictionary of business info
+#     for business in result:
+#         yelp_id = business['id']
+#         name = business['name']
+#         location_lat = business['location']['coordinate']['latitude']
+#         location_lng = business['location']['coordinate']['longitude']
 
-    return jsonify(results_dict)
+#         results_dict[yelp_id] = {'name': name,
+#                                  'location_lat': location_lat,
+#                                  'location_lng': location_lng}
+
+#     return jsonify(results_dict)
 
 
 ### GOOGLE API ###
