@@ -42,14 +42,15 @@ function initMap() {
     bindInfoWindow(marker, map, infoWindow, html);
   }
 
-  // When a marker is clicked, it closes any currently open infoWindows
-  // Sets the content for the new marker with the content passed through
-  // Then it opens the infoWindow with the new content on the marker that's clicked
+  // On mouseover, the content for the marker is set and the infoWindow is opened.
+  // On mouseout, the infoWindow is closed. 
   function bindInfoWindow(marker, map, infoWindow, html) {
-    google.maps.event.addListener(marker, 'click', function() {
-      infoWindow.close();
+    google.maps.event.addListener(marker, 'mouseover', function() {
       infoWindow.setContent(html);
       infoWindow.open(map, marker);
+    });
+    google.maps.event.addListener(marker, 'mouseout', function() {
+      infoWindow.close();
     });
   }
 
