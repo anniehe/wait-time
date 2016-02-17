@@ -42,7 +42,7 @@
   <!-- List Results -->
 
   {% for business in result %}
-    <div>
+    <div id="{{ business['id'] }}">
       <h2>{{ business['name'] }}</h2>
 
       <p>{{ business['location']['address'][0] }}, {{ business['location']['city'] }}, {{ business['location']['state_code'] }} {{ business['location']['postal_code'] }}</p>

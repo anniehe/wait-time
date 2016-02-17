@@ -6,11 +6,12 @@ function initMap() {
 
   var infoWindow = new google.maps.InfoWindow({map: map});
 
-  var key, restaurant, name, locationLat, locationLng, marker, html;
+  var key, restaurant, yelpId, name, locationLat, locationLng, marker, html, anchor;
   var address, phone, image, ratingImage, reviewCount, status;
 
   for (key in resultObject['result']) {
     restaurant = resultObject['result'][key];
+    yelpId = resultObject['result'][key]['id'];
     name = resultObject['result'][key]['name'];
     locationLat = resultObject['result'][key]['location']['coordinate']['latitude'];
     locationLng = resultObject['result'][key]['location']['coordinate']['longitude'];
@@ -41,6 +42,7 @@ function initMap() {
       '</div>');
 
     bindInfoWindow(marker, map, infoWindow, html);
+    jumpToResult(marker, yelpId);
   }
 
   // On mouseover, the content for the marker is set and the infoWindow is opened.
@@ -52,6 +54,12 @@ function initMap() {
     });
     google.maps.event.addListener(marker, 'mouseout', function() {
       infoWindow.close();
+    });
+  }
+
+  function jumpToResult(marker, anchor) {
+    google.maps.event.addListener(marker, 'click', function() {
+      window.location = "#" + anchor;
     });
   }
 
