@@ -1,7 +1,8 @@
 function initMap() {
+  // Instantiate a map object and specify DOM element for displaying map
   var map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.7886334, lng: -122.4114752},
-    zoom: 12
+    zoom: 10
   });
 
   var infoWindow = new google.maps.InfoWindow({map: map});
@@ -10,13 +11,14 @@ function initMap() {
   var address, city, stateCode, zipCode, phone, status;
   var html, marker, locationLat, locationLng;
 
+  // Access each restaurant's info in the resultObject
   for (key in resultObject['result']) {
 
     restaurant = resultObject['result'][key];
     yelpId = resultObject['result'][key]['id'];
     name = resultObject['result'][key]['name'];
     image = resultObject['result'][key]['image_url'];
-    ratingImage = resultObject['result'][key]['rating_img_url'];
+    ratingImage = resultObject['result'][key]['rating_img_url_small'];
     reviewCount = resultObject['result'][key]['review_count'];
 
     address = resultObject['result'][key]['location']['address'][0];
@@ -36,7 +38,7 @@ function initMap() {
         title: name
     });
 
-    // Define the content of the infoWindow
+    // Define the content of the infoWindow for each restaurant
     html = (
       '<div>' +
         '<img src="' + image + '" alt="restaurant">' +
@@ -77,7 +79,7 @@ function initMap() {
   // console.log(resultObject['result'][0]['location']['coordinate']['latitude']);
   // console.log(resultObject['result'][0]['location']['coordinate']['longitude']);
 
-  // Try HTML5 geolocation.
+  // Try HTML5 geolocation
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
@@ -86,7 +88,7 @@ function initMap() {
       };
 
       infoWindow.setPosition(pos);
-      infoWindow.setContent('Location found.');
+      infoWindow.setContent('Current location.');
       map.setCenter(pos);
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -97,6 +99,7 @@ function initMap() {
   }
 }
 
+// Handles Geolocation error
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?

@@ -38,6 +38,7 @@ def display_search_results():
     if not location_term:
         location_term = "San Francisco"
 
+    ### Yelp API call from user input values ###
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants")
@@ -48,6 +49,7 @@ def display_search_results():
     # Each business is a dictionary
     for business in result:
 
+        ### Find matching Google Places info for Yelp results ###
         name = business['name']
         address = business['location']['address'][0]
         city = business['location']['city']
@@ -58,14 +60,13 @@ def display_search_results():
         location = "%f,%f" % (location_lat, location_lng)
 
         # Get place_id from Google API for the business result from Yelp
+        # to check for opening hours and open now info
         place_id = get_place_id(keyword, location)
 
-        # If there's a match, add opening_hours_info and open_now to the dictionary
         if not place_id:
             opening_hours_info = None
             open_now = "Open now unknown"
         else:
-            # If there are opening hours info for the place id
             if get_opening_hours_info(place_id):
                 opening_hours_info, open_now = get_opening_hours_info(place_id)
                 if open_now is True:
@@ -76,9 +77,11 @@ def display_search_results():
                 opening_hours_info = None
                 open_now = "Open now unknown"
 
+        # add opening hours and open now info to each business' dictionary
         business['opening_hours'] = opening_hours_info
         business['open_now'] = open_now
 
+        ### Find matching wait time info from database, if available ###
         yelp_id = business['id']
 
         # The most recent wait time info for a restaurant
@@ -88,7 +91,7 @@ def display_search_results():
                      .first()
                      )
 
-        # If there is wait time info for a restaurant, add to dictionary
+        # Add wait time info to each business' dictionary
         if wait_info:
             business['quoted_wait_time'] = wait_info.quoted_minutes
             business['party_size'] = wait_info.party_size
