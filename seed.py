@@ -39,8 +39,7 @@ def load_wait_times():
     wait6 = WaitTime(yelp_id="nara-sushi-san-francisco",
                      party_size=2,
                      quoted_minutes=90,
-                     parties_ahead=6,
-                     timestamp=datetime(2016, 2, 12, 22, 15))
+                     parties_ahead=6)
 
     wait7 = WaitTime(yelp_id="ryokos-san-francisco",
                      party_size=2,
@@ -58,17 +57,13 @@ def load_wait_times():
     wait9 = WaitTime(yelp_id="akikos-restaurant-san-francisco",
                      party_size=2,
                      quoted_minutes=75,
-                     parties_ahead=4)
+                     parties_ahead=4,
+                     timestamp=datetime(2016, 2, 12, 22, 15))
 
-    db.session.add(wait1)
-    db.session.add(wait2)
-    db.session.add(wait3)
-    db.session.add(wait4)
-    db.session.add(wait5)
-    db.session.add(wait6)
-    db.session.add(wait7)
-    db.session.add(wait8)
-    db.session.add(wait9)
+    db.session.add_all([wait1, wait2, wait3, wait4,
+                        wait5, wait6, wait7, wait8,
+                        wait9])
+
     db.session.commit()
 
 
