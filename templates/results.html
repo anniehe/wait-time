@@ -16,7 +16,7 @@
 
   <script src="https://code.jquery.com/jquery.js"></script>
   <script>
-    var result_object = {{ result_dict|tojson|safe }};
+    var resultObject = {{ result_dict|tojson|safe }};
   </script>
   <script src="/static/js/map.js"></script>
   <script async defer
@@ -41,7 +41,6 @@
 
   <!-- List Results -->
 
-  <!-- Each business is a dictionary in result (list of businesses) -->
   {% for business in result %}
     <div>
       <h2>{{ business['name'] }}</h2>

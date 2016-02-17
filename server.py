@@ -104,13 +104,14 @@ def display_search_results():
     # if request.args.get('sort') == quoted_wait_time, then run code below
     # result.sort(key=lambda business: business['quoted_wait_time'])
 
-    # result is now a list of businesses with wait time info and hours info added
+    # Adding result (now a list of businesses with wait time and hours info added)
+    # to result_dict, which will be converted to a JSON through Jinja.
     result_dict = {'result': result}
 
     return render_template("results.html",
-                            result=result,
-                            key=browser_key,
-                            result_dict=result_dict)
+                           result=result,
+                           key=browser_key,
+                           result_dict=result_dict)
 
 
 # @app.route("/results.json")

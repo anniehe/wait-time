@@ -3,15 +3,31 @@ function initMap() {
     center: {lat: 37.7886334, lng: -122.4114752},
     zoom: 12
   });
+
   var infoWindow = new google.maps.InfoWindow({map: map});
 
+  var key, restaurant, name, locationLat, locationLng, marker;
 
-  console.log(result_object);
-  console.log(result_object['result'][0]);
-  console.log(result_object['result'][0]['id']);
-  // console.log(result_object['result'][0]['location']['address'][0]);
-  // console.log(result_object['result'][0]['location']['coordinate']['latitude']);
-  // console.log(result_object['result'][0]['location']['coordinate']['longitude']);
+  for (key in resultObject['result']) {
+    restaurant = resultObject['result'][key];
+    name = resultObject['result'][key]['name'];
+    locationLat = resultObject['result'][key]['location']['coordinate']['latitude'];
+    locationLng = resultObject['result'][key]['location']['coordinate']['longitude'];
+
+    // Define the markers for each restaurant
+    marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locationLat, locationLng),
+        map: map,
+        title: name
+    });
+  }
+
+  // console.log(resultObject);
+  // console.log(resultObject['result'][0]);
+  // console.log(resultObject['result'][0]['id']);
+  // console.log(resultObject['result'][0]['location']['address'][0]);
+  // console.log(resultObject['result'][0]['location']['coordinate']['latitude']);
+  // console.log(resultObject['result'][0]['location']['coordinate']['longitude']);
 
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
