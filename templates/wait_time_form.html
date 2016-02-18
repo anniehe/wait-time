@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block head %}
+
+  <title>Report Wait Time</title>
+
+{% endblock %}
+
+
+{% block body %}
+
+  <!-- Search Form -->
+  <h1>Report Your Wait Time</h1>
+
+  <form action="/process_report" method="POST">
+    <label>Restaurant Name: <br>
+      <input type="text" name="restaurant_name" required>
+    </label><br><br>
+    
+    <label>Party Size: <br>
+      <input type="number" name="party_size">
+    </label><br><br>
+    
+    <label>Number of Parties Ahead: <br>
+      <input type="number" name="parties_ahead">
+    </label><br><br>
+    
+    <label>Quoted Wait Time: <br>
+      <input type="number" name="quoted_hr" min="0" max="3" required>hr &nbsp;
+      <input type="number" name="quoted_min" min="0" max="59" required>min
+    </label><br><br>
+    
+    <input type="submit" value="Report">
+  </form>
+
+{% endblock %}
