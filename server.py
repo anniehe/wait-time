@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 
@@ -12,12 +12,26 @@ from datetime import datetime
 import humanize
 
 
+### GOOGLE MAPS API ###
+BROWSER_KEY = os.environ['GOOGLE_BROWSER_KEY']
+
+
+### YELP API ###
+CONSUMER_KEY = os.environ['YELP_CONSUMER_KEY']
+CONSUMER_SECRET = os.environ['YELP_CONSUMER_SECRET']
+TOKEN = os.environ['YELP_TOKEN']
+TOKEN_SECRET = os.environ['YELP_TOKEN_SECRET']
+
+yelp_api = YelpAPI(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET)
+
+
+### FLASK APP ###
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "SHHHHH"
 
-# This raises an error if you use an undefined variable in Jinja2.
+# Raises an error an undefined variable in Jinja2 is used
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -38,82 +52,30 @@ def display_search_results():
     if not location_term:
         location_term = "San Francisco"
 
-    ### Yelp API call from user input values ###
+    # Yelp API call from user input values
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants")
 
-    # result is the list of businesses
+    # result is the list of business dictionaries
     result = search_results['businesses']
 
-    # Each business is a dictionary
+    # Add opening hours/open now info from Google Places and wait time info from
+    # database to each business dictionary
     for business in result:
-
-        ### Find matching Google Places info for Yelp results ###
-        name = business['name']
-        address = business['location']['address'][0]
-        city = business['location']['city']
-        location_lat = business['location']['coordinate']['latitude']
-        location_lng = business['location']['coordinate']['longitude']
-
-        keyword = "%s %s %s" % (name, address, city)
-        location = "%f,%f" % (location_lat, location_lng)
-
-        # Get place_id from Google API for the business result from Yelp
-        # to check for opening hours and open now info
-        place_id = get_place_id(keyword, location)
-
-        if not place_id:
-            opening_hours_info = None
-            open_now = "Open now unknown"
-        else:
-            if get_opening_hours_info(place_id):
-                opening_hours_info, open_now = get_opening_hours_info(place_id)
-                if open_now is True:
-                    open_now = "Open now"
-                elif open_now is False:
-                    open_now = "Closed"
-            else:
-                opening_hours_info = None
-                open_now = "Open now unknown"
-
-        # add opening hours and open now info to each business' dictionary
-        business['opening_hours'] = opening_hours_info
-        business['open_now'] = open_now
-
-        ### Find matching wait time info from database, if available ###
-        yelp_id = business['id']
-
-        # The most recent wait time info for a restaurant
-        # If same timestamp, fetch the largest quoted wait time
-        wait_info = (WaitTime.query.filter_by(yelp_id=yelp_id)
-                     .order_by(WaitTime.timestamp.desc(), WaitTime.quoted_minutes.desc())
-                     .first()
-                     )
-
-        # Add wait time info to each business' dictionary
-        if wait_info:
-            business['quoted_wait_time'] = wait_info.quoted_minutes
-            business['party_size'] = wait_info.party_size
-            business['parties_ahead'] = wait_info.parties_ahead
-            business['timestamp'] = humanize.naturaltime(datetime.utcnow() - wait_info.timestamp)
-        else:
-            business['quoted_wait_time'] = "Not available"
-            business['party_size'] = "Not available"
-            business['parties_ahead'] = "Not available"
-            business['timestamp'] = "Not available"
+        add_restaurant_open_info(business)
+        add_wait_info(business)
 
     # Sort by shortest wait time if checkbox is checked
     if request.args.get("sort_by") == "wait_time":
         result.sort(key=lambda business: business['quoted_wait_time'])
 
-    # Adding result (now a list of businesses with wait time and hours info added)
-    # to result_dict, which will be converted to a JSON through Jinja.
+    # Add result to result_dict, which will be converted to a JSON through Jinja.
     result_dict = {'result': result}
 
     return render_template("results.html",
                            result=result,
-                           key=browser_key,
+                           key=BROWSER_KEY,
                            result_dict=result_dict)
 
 
@@ -129,21 +91,70 @@ def process_wait_time_form():
     """Adds wait time information into database if for valid restaurant."""
 
     print "processing..."
-    return None
+    return redirect("/")
 
 
-### GOOGLE API ###
-browser_key = os.environ['GOOGLE_BROWSER_KEY']
+### HELPER FUNCTIONS ###
+
+def add_restaurant_open_info(business):
+    """Add opening hours and open now information to the business dictionary."""
+
+    # Find matching Google Places info for the Yelp result
+    name = business['name']
+    address = business['location']['address'][0]
+    city = business['location']['city']
+    location_lat = business['location']['coordinate']['latitude']
+    location_lng = business['location']['coordinate']['longitude']
+
+    keyword = "%s %s %s" % (name, address, city)
+    location = "%f,%f" % (location_lat, location_lng)
+
+    # Get place_id from Google Places API for the Yelp result
+    # to check for opening hours and open now info
+    place_id = get_place_id(keyword, location)
+
+    if not place_id:
+        opening_hours_info = None
+        open_now = "Open now unknown"
+    else:
+        if get_opening_hours_info(place_id):
+            opening_hours_info, open_now = get_opening_hours_info(place_id)
+            if open_now is True:
+                open_now = "Open now"
+            elif open_now is False:
+                open_now = "Closed"
+        else:
+            opening_hours_info = None
+            open_now = "Open now unknown"
+
+    # Add opening hours and open now info to dictionary
+    business['opening_hours'] = opening_hours_info
+    business['open_now'] = open_now
 
 
-### YELP API ###
+def add_wait_info(business):
+    """Add wait time information from database to the business dictionary."""
 
-consumer_key = os.environ['YELP_CONSUMER_KEY']
-consumer_secret = os.environ['YELP_CONSUMER_SECRET']
-token = os.environ['YELP_TOKEN']
-token_secret = os.environ['YELP_TOKEN_SECRET']
+    yelp_id = business['id']
 
-yelp_api = YelpAPI(consumer_key, consumer_secret, token, token_secret)
+    # Find the most recent wait time info for a restaurant from the database.
+    # For records with the same timestamp, fetch the largest quoted wait time.
+    wait_info = (WaitTime.query.filter_by(yelp_id=yelp_id)
+                 .order_by(WaitTime.timestamp.desc(), WaitTime.quoted_minutes.desc())
+                 .first()
+                 )
+
+    # Add wait time info to business dictionary
+    if wait_info:
+        business['quoted_wait_time'] = wait_info.quoted_minutes
+        business['party_size'] = wait_info.party_size
+        business['parties_ahead'] = wait_info.parties_ahead
+        business['timestamp'] = humanize.naturaltime(datetime.utcnow() - wait_info.timestamp)
+    else:
+        business['quoted_wait_time'] = "Not available"
+        business['party_size'] = "Not available"
+        business['parties_ahead'] = "Not available"
+        business['timestamp'] = "Not available"
 
 
 if __name__ == "__main__":
