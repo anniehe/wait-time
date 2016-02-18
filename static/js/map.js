@@ -54,8 +54,9 @@ function initMap() {
 
     bindInfoWindow(marker, map, infoWindow, html);
     jumpToResult(marker, yelpId);
-    tryGeolocation(infoWindow, map, bounds);
   }
+
+  getCurrentLocation(infoWindow, map, bounds);
 
   // Fit map to bounds
   map.fitBounds(bounds);
@@ -86,9 +87,8 @@ function jumpToResult(marker, anchor) {
 }
 
 
-// Try Geolocation
-function tryGeolocation(infoWindow, map, bounds) {
-  // If Geolocation allowed, get current location
+// If Geolocation is allowed, get current location
+function getCurrentLocation(infoWindow, map, bounds) {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = {
@@ -98,7 +98,7 @@ function tryGeolocation(infoWindow, map, bounds) {
 
       // Define marker for current location
       var currentLocationMarker = new google.maps.Marker({
-        position: new google.maps.LatLng(pos.lat, pos.lng),
+        position: pos,
         map: map,
         title: "Current Location",
         icon: '/static/img/google_map_icon_star.png'
@@ -110,21 +110,23 @@ function tryGeolocation(infoWindow, map, bounds) {
       map.fitBounds(bounds);
 
     }, function() {
-      handleLocationError(true, infoWindow, bounds.getCenter());
+      handleLocationError(true, infoWindow, map.getCenter(), map);
     });
   } else {
     // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, bounds.getCenter());
+    handleLocationError(false, infoWindow, map.getCenter(), map);
+
   }
 }
 
 
 // Handles Geolocation error
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+function handleLocationError(browserHasGeolocation, infoWindow, pos, map) {
   infoWindow.setPosition(pos);
   infoWindow.setContent(browserHasGeolocation ?
                         'Error: The Geolocation service failed.' :
                         'Error: Your browser doesn\'t support geolocation.');
+  infoWindow.setMap(map);
 }
 
 
