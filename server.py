@@ -92,43 +92,6 @@ def display_search_results():
                            location_term=location_term)
 
 
-@app.route("/find_restaurant")
-def display_restaurant_search_form():
-    """Display restaurant search form to select for restaurant to report wait time."""
-
-    return render_template("find_restaurant.html",
-                           key=BROWSER_KEY)
-
-
-# @app.route("/search_yelp")
-# def find_restaurant():
-#     """Searches Yelp API for restaurant(s) that matches user search."""
-
-#     search_term = request.args.get("restaurant")
-#     location_term = request.args.get("location")
-
-#     # Yelp API call from user input values
-#     search_results = yelp_api.search_query(term=search_term,
-#                                            location=location_term,
-#                                            category_filter="food,restaurants",
-#                                            limit=3)
-
-#     # result is the list of business dictionaries
-#     result = search_results['businesses']
-
-#     for business in result:
-#         name = business['name'].lower
-#         address = business['location']['address'][0]
-#         city = business['location']['city']
-
-#     return render_template("wait_time_form.html",
-#                            name=name,
-#                            address=address,
-#                            city=city,
-#                            state_code=state_code,
-#                            )
-
-
 @app.route("/report")
 def display_wait_time_form():
     """Display form to report wait time."""
