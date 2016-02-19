@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 
@@ -80,6 +80,30 @@ def display_search_results():
     # Sort by shortest wait time if checkbox is checked
     if request.args.get("sort_by") == "wait_time":
         result.sort(key=lambda business: business['quoted_wait_time'])
+
+    # Sort by highest rating if checkbox is checked
+    if request.args.get("sort_by") == "rating":
+        result.sort(key=lambda business: business['rating'], reverse=True)
+
+    # Sort by highest review if checkbox is checked
+    if request.args.get("sort_by") == "review_count":
+        result.sort(key=lambda business: business['review_count'], reverse=True)
+
+    # Filter by 45 min wait
+    if request.args.get("filter_by") == "45_min_wait":
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] == 45:
+                new_result.append(business)
+        result = new_result
+
+    # Filter by open now
+    if request.args.get("filter_by") == "open_now":
+        new_result = []
+        for business in result:
+            if business['open_now'] == "Open now":
+                new_result.append(business)
+        result = new_result
 
     # Add result to result_dict, which will be converted to a JSON through Jinja.
     result_dict = {'result': result}
@@ -171,6 +195,8 @@ def process_wait_time_form():
     db.session.add(reported_wait_info)
     db.session.commit()
 
+    flash("Thanks for reporting your wait time!")
+
     return redirect("/")
 
 
@@ -200,10 +226,43 @@ def add_restaurant_open_info(business):
         restaurant_hours_info = get_opening_hours_info(place_id)
         if restaurant_hours_info:
             opening_hours_info, open_now = restaurant_hours_info
-            if open_now is True:
+            if open_now == True:
                 open_now = "Open now"
-            elif open_now is False:
+            elif open_now == False:
                 open_now = "Closed"
+
+            # opening_hours_info is a list of day:hoursopen-hoursclose
+            # loop over the list
+                # for item in string, slice and grab everything up until the colon
+                    # grab today's day using datetime
+                    # compare the two, if it is that day
+                # take that element and add to dictinoary for the current day
+
+            day_of_week = datetime.now().date().weekday()
+
+            if day_of_week == 0:
+                day_of_week = "Monday"
+            elif day_of_week == 1:
+                day_of_week = "Tuesday"
+            elif day_of_week == 2:
+                day_of_week = "Wednesday"
+            elif day_of_week == 3:
+                day_of_week = "Thursday"
+            elif day_of_week == 4:
+                day_of_week = "Friday"
+            elif day_of_week == 5:
+                day_of_week = "Saturday"
+            elif day_of_week == 5:
+                day_of_week = "Sunday"
+
+            for item in opening_hours_info:
+                day_hours_info = item.split(":")
+                day = day_hours_info[0]
+                if day == day_of_week:
+                    day_hours = item
+                    break
+            business['todays_hours'] = day_hours
+
         else:
             opening_hours_info = None
             open_now = "Open now unknown"

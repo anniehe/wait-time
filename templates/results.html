@@ -38,6 +38,10 @@
     <br>
     <br>
     <input type="checkbox" name="sort_by" value="wait_time">Sort by shortest wait time
+    <input type="checkbox" name="sort_by" value="rating">Sort by highest rating
+    <input type="checkbox" name="sort_by" value="review_count">Sort by most reviews
+    <input type="checkbox" name="filter_by" value="45_min_wait">Filter for 45 min wait
+    <input type="checkbox" name="filter_by" value="open_now">Filter for open now
   </form>
   <br>
 
@@ -88,6 +92,7 @@
           {% endfor %}
         </ul>
         </p>
+        <p>Today's Hours: <br> {{ business['todays_hours'] }}</p>
       {% else %}
         <p>Hours not available</p>
       {% endif %}

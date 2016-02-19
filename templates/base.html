@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    
+
   {% block head %}
       <!-- put extra CSS/JS here -->
   {% endblock %}
@@ -9,8 +9,14 @@
 </head>
 <body>
 
-{% block body %}
-{% endblock %}
+  <p>
+  {% for message in get_flashed_messages() %}
+    {{ message }}
+  {% endfor %}
+  </p>
+
+  {% block body %}
+  {% endblock %}
 
 </body>
 </html>
