@@ -32,8 +32,8 @@
   <h1>What's the wait time?</h1>
 
   <form action="/search" method="GET">
-    For: <input type="text" name="keyword" placeholder="Restaurant or Food" required> &nbsp;
-    Near: <input type="text" name="location" placeholder="Location (default: SF)">
+    For: <input type="text" name="keyword" placeholder="Restaurant or Food" value="{{ search_term }}" required> &nbsp;
+    Near: <input type="text" name="location" placeholder="Location (default: SF)" value="{{ location_term }}">
     <input type="submit" value="Let's see!">
     <br>
     <br>

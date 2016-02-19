@@ -18,7 +18,7 @@ class WaitTime(db.Model):
     party_size = db.Column(db.Integer, nullable=True)
     quoted_minutes = db.Column(db.Integer, nullable=False)
     parties_ahead = db.Column(db.Integer, nullable=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow())
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     still_waiting = db.Column(db.Boolean, default=True)
 
     def __repr__(self):

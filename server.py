@@ -52,10 +52,13 @@ def display_search_results():
     if not location_term:
         location_term = "San Francisco"
 
+    # before_yelp = datetime.now()
     # Yelp API call from user input values
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants")
+    # after_yelp = datetime.now()
+    # print after_yelp - before_yelp, "YELP"
 
     # result is the list of business dictionaries
     result = search_results['businesses']
@@ -63,8 +66,16 @@ def display_search_results():
     # Add opening hours/open now info from Google Places and wait time info from
     # database to each business dictionary
     for business in result:
+
+        # before_google = datetime.now()
         add_restaurant_open_info(business)
+        # after_google = datetime.now()
+        # print after_google - before_google, "GOOGLE"
+
+        # before_wait = datetime.now()
         add_wait_info(business)
+        # after_wait = datetime.now()
+        # print after_wait - before_wait, "WAIT"
 
     # Sort by shortest wait time if checkbox is checked
     if request.args.get("sort_by") == "wait_time":
@@ -76,7 +87,9 @@ def display_search_results():
     return render_template("results.html",
                            result=result,
                            key=BROWSER_KEY,
-                           result_dict=result_dict)
+                           result_dict=result_dict,
+                           search_term=search_term,
+                           location_term=location_term)
 
 
 @app.route("/find_restaurant")
@@ -128,7 +141,24 @@ def display_wait_time_form():
 def process_wait_time_form():
     """Adds wait time information into database if for valid restaurant."""
 
-    print "processing..."
+    # restaurant_name = request.form.get("restaurant_name")
+    # location = request.form.get("location")
+
+    # search_results = yelp_api.search_query(term=search_term,
+    #                                        location=location_term,
+    #                                        category_filter="food,restaurants")
+
+    # # result is the list of business dictionaries
+    # result = search_results['businesses']
+
+    wait_test = WaitTime(yelp_id="sanraku-san-francisco-2",
+                         party_size=4,
+                         quoted_minutes=150,
+                         parties_ahead=8)
+
+    db.session.add(wait_test)
+    db.session.commit()
+
     return redirect("/")
 
 
@@ -155,8 +185,9 @@ def add_restaurant_open_info(business):
         opening_hours_info = None
         open_now = "Open now unknown"
     else:
-        if get_opening_hours_info(place_id):
-            opening_hours_info, open_now = get_opening_hours_info(place_id)
+        restaurant_hours_info = get_opening_hours_info(place_id)
+        if restaurant_hours_info:
+            opening_hours_info, open_now = restaurant_hours_info
             if open_now is True:
                 open_now = "Open now"
             elif open_now is False:
