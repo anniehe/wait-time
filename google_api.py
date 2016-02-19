@@ -1,27 +1,29 @@
 import requests
 import os
 
-key = os.environ['GOOGLE_SERVER_KEY']
+KEY = os.environ['GOOGLE_SERVER_KEY']
 
 
 def get_place_id(keyword, location):
     """Get place_id from Google Places API for a business."""
 
     ### TEXTSEARCH ###
-    payload = {'key': key,
+    payload = {'key': KEY,
                'query': keyword,
                'location': location,
                'radius': '500'}
 
-    r = requests.get("https://maps.googleapis.com/maps/api/place/textsearch/json", params=payload)
+    r = requests.get("https://maps.googleapis.com/maps/api/place/textsearch/json",
+                     params=payload)
 
     ### NEARBY SEARCH ###
-    # payload = {'key': key,
+    # payload = {'key': KEY,
     #            'keyword': keyword,
     #            'location': location,
     #            'radius': '500'}
 
-    # r = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=payload)
+    # r = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json",
+    #                  params=payload)
 
     place_results = r.json()
 
@@ -38,10 +40,11 @@ def get_place_id(keyword, location):
 def get_opening_hours_info(place_id):
     """Get information on business hours and if open now from Google Places API."""
 
-    payload = {'key': key,
+    payload = {'key': KEY,
                'placeid': place_id}
 
-    r = requests.get("https://maps.googleapis.com/maps/api/place/details/json", params=payload)
+    r = requests.get("https://maps.googleapis.com/maps/api/place/details/json",
+                     params=payload)
 
     place_details = r.json()
 

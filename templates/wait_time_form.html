@@ -3,25 +3,36 @@
 
   <title>Report Wait Time</title>
 
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ key }}&libraries=places"></script>
+  <script src="/static/js/find_restaurant.js"></script>
+
+
 {% endblock %}
 
 
 {% block body %}
 
-  <!-- Search Form -->
+  <!-- Wait Time Form -->
   <h1>Report Your Wait Time</h1>
 
   <form action="/process_report" method="POST">
-    <label>Restaurant Name: <br>
-      <input type="text" name="restaurant_name" required>
+
+    <label>Restaurant: <br>
+      <input id="find_restaurant" type="text" name="restaurant_input" size="50" required>
     </label><br><br>
-    
+
+    <!-- Make restaurant name and location hidden later -->
+    <!-- Use these values to search yelp for yelp_id -->
+    <input id="restaurant_name" type="text" name="restaurant_name">
+    <input id="location" type="text" name="location"><br><br>
+
     <label>Party Size: <br>
-      <input type="number" name="party_size">
+      <input type="number" name="party_size" min="0">
     </label><br><br>
     
     <label>Number of Parties Ahead: <br>
-      <input type="number" name="parties_ahead">
+      <input type="number" name="parties_ahead" min="0">
     </label><br><br>
     
     <label>Quoted Wait Time: <br>
