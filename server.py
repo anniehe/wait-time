@@ -141,22 +141,71 @@ def display_wait_time_form():
 def process_wait_time_form():
     """Adds wait time information into database if for valid restaurant."""
 
-    # restaurant_name = request.form.get("restaurant_name")
-    # location = request.form.get("location")
+    restaurant_name = request.form.get("restaurant_name")
+    location = request.form.get("location")
 
-    # search_results = yelp_api.search_query(term=search_term,
-    #                                        location=location_term,
-    #                                        category_filter="food,restaurants")
+    # Yelp API call from restaurant name and location values
+    # parsed from selected restaurant using autocomplete
+    # to get the corresponding yelp id
+    search_results = yelp_api.search_query(term=restaurant_name,
+                                           location=location,
+                                           category_filter="food,restaurants",
+                                           limit=1)
 
-    # # result is the list of business dictionaries
-    # result = search_results['businesses']
+    # restaurant_info is a dictionary
+    restaurant_info = search_results['businesses'][0]
 
-    wait_test = WaitTime(yelp_id="sanraku-san-francisco-2",
-                         party_size=4,
-                         quoted_minutes=150,
-                         parties_ahead=8)
+    yelp_id = str(restaurant_info['id'])
 
-    db.session.add(wait_test)
+    quoted_hr = int(request.form.get("quoted_hr"))
+    quoted_min = int(request.form.get("quoted_min"))
+
+    # Convert quoted wait time into one value
+    if quoted_hr != 0:
+        quoted_minutes = quoted_min + (quoted_hr * 60)
+    else:
+        quoted_minutes = quoted_min
+
+    # Check if a value for party_size was entered
+    try:
+        party_size = int(request.form.get("party_size"))
+    # If no value for party_size was entered
+    except ValueError:
+        # Check if a value for parties_ahead was entered
+        try:
+            parties_ahead = int(request.form.get("parties_ahead"))
+        # If no values entered for both party_size and parties_ahead,
+        # instantiate a WaitTime object with all available values
+        except ValueError:
+            reported_wait_info = WaitTime(yelp_id=yelp_id,
+                                          quoted_minutes=quoted_minutes)
+        # If a value for parties_ahead was entered,
+        # instantiate a WaitTime object with all available values
+        else:
+            reported_wait_info = WaitTime(yelp_id=yelp_id,
+                                          parties_ahead=parties_ahead,
+                                          quoted_minutes=quoted_minutes)
+
+    # If a value for party_size was entered
+    else:
+        # Check if a value for parties_ahead was entered
+        try:
+            parties_ahead = int(request.form.get("parties_ahead"))
+        # If no values entered for parties_ahead,
+        # instantiate a WaitTime object with all available values
+        except ValueError:
+            reported_wait_info = WaitTime(yelp_id=yelp_id,
+                                          party_size=party_size,
+                                          quoted_minutes=quoted_minutes)
+        # If values for both party_size and parties_ahead were entered,
+        # instantiate a WaitTime object with all available values
+        else:
+            reported_wait_info = WaitTime(yelp_id=yelp_id,
+                                          party_size=party_size,
+                                          quoted_minutes=quoted_minutes,
+                                          parties_ahead=parties_ahead)
+
+    db.session.add(reported_wait_info)
     db.session.commit()
 
     return redirect("/")
@@ -216,9 +265,18 @@ def add_wait_info(business):
     # Add wait time info to business dictionary
     if wait_info:
         business['quoted_wait_time'] = wait_info.quoted_minutes
-        business['party_size'] = wait_info.party_size
-        business['parties_ahead'] = wait_info.parties_ahead
         business['timestamp'] = humanize.naturaltime(datetime.utcnow() - wait_info.timestamp)
+
+        if wait_info.party_size:
+            business['party_size'] = wait_info.party_size
+        else:
+            business['party_size'] = "Not available"
+
+        if wait_info.parties_ahead:
+            business['parties_ahead'] = wait_info.parties_ahead
+        else:
+            business['parties_ahead'] = "Not available"
+
     else:
         business['quoted_wait_time'] = "Not available"
         business['party_size'] = "Not available"

@@ -14,7 +14,7 @@ class WaitTime(db.Model):
     __tablename__ = "wait_times"
 
     wait_time_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    yelp_id = db.Column(db.String(200))
+    yelp_id = db.Column(db.String(200), nullable=False)
     party_size = db.Column(db.Integer, nullable=True)
     quoted_minutes = db.Column(db.Integer, nullable=False)
     parties_ahead = db.Column(db.Integer, nullable=True)
