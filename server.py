@@ -52,13 +52,14 @@ def display_search_results():
     if not location_term:
         location_term = "San Francisco"
 
-    # before_yelp = datetime.now()
+    before_yelp = datetime.now()
     # Yelp API call from user input values
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
-                                           category_filter="food,restaurants")
-    # after_yelp = datetime.now()
-    # print after_yelp - before_yelp, "YELP"
+                                           category_filter="food,restaurants",
+                                           limit=10)
+    after_yelp = datetime.now()
+    print after_yelp - before_yelp, "YELP"
 
     # result is the list of business dictionaries
     result = search_results['businesses']
@@ -67,15 +68,18 @@ def display_search_results():
     # database to each business dictionary
     for business in result:
 
-        # before_google = datetime.now()
+        before_google = datetime.now()
         add_restaurant_open_info(business)
-        # after_google = datetime.now()
-        # print after_google - before_google, "GOOGLE"
+        after_google = datetime.now()
+        print after_google - before_google, "GOOGLE"
 
-        # before_wait = datetime.now()
+        before_wait = datetime.now()
         add_wait_info(business)
-        # after_wait = datetime.now()
-        # print after_wait - before_wait, "WAIT"
+        after_wait = datetime.now()
+        print after_wait - before_wait, "WAIT"
+
+    after_loop = datetime.now()
+    print after_loop - before_yelp, "TOTAL TIME"
 
     # Sort by shortest wait time if checkbox is checked
     if request.args.get("sort_by") == "wait_time":
@@ -226,9 +230,9 @@ def add_restaurant_open_info(business):
         restaurant_hours_info = get_opening_hours_info(place_id)
         if restaurant_hours_info:
             opening_hours_info, open_now = restaurant_hours_info
-            if open_now == True:
+            if open_now is True:
                 open_now = "Open now"
-            elif open_now == False:
+            elif open_now is False:
                 open_now = "Closed"
 
             # opening_hours_info is a list of day:hoursopen-hoursclose

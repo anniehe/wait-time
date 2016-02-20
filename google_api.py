@@ -4,6 +4,27 @@ import os
 KEY = os.environ['GOOGLE_SERVER_KEY']
 
 
+def get_open_now(keyword, location):
+    payload = {'key': KEY,
+               'query': keyword,
+               'location': location,
+               'radius': '500'}
+
+    r = requests.get("https://maps.googleapis.com/maps/api/place/textsearch/json",
+                     params=payload)
+
+    place_results = r.json()
+
+    if place_results.get('result'):
+        if place_results.get['result'].get('opening_hours'):
+
+            # open_now is True or False
+            open_now = place_results['result']['opening_hours']['open_now']
+        return open_now
+    else:
+        return None
+
+
 def get_place_id(keyword, location):
     """Get place_id from Google Places API for a business."""
 
