@@ -1,3 +1,27 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+#map {
+  height: 500px;
+  width: 500px;
+}
+
 body {
     padding-top: 50px;
+}
+
+.center {
+   text-align: center;
+   margin: auto;
+  }
+
+.fixed {
+    position: fixed;
+}
+
+.relative {
+    position: absolute;
+    margin-top: 200px;
 }

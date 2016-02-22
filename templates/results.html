@@ -3,18 +3,6 @@
 
   <title>Results</title>
   <link rel="stylesheet" href="../static/css/results.css">
-
-  <style>
-    html, body {
-      height: 100%;
-    }
-
-    #map {
-      height: 500px;
-      width: 500px;
-    }
-  </style>
-
   <script>
     var resultObject = {{ result_dict|tojson|safe }};
   </script>
@@ -28,77 +16,130 @@
 
 {% block body %}
 
-  <!-- Search Form -->
-  <h1>What's the wait time?</h1>
+  <!-- SEARCH FORM -->
 
-  <form action="/search" method="GET">
-    For: <input type="text" name="keyword" placeholder="Restaurant or Food" value="{{ search_term }}" required> &nbsp;
-    Near: <input type="text" name="location" placeholder="Location (default: SF)" value="{{ location_term }}">
-    <input type="submit" value="Let's see!">
-    <br>
-    <br>
-    <input type="checkbox" name="sort_by" value="wait_time">Sort by shortest wait time
-    <input type="checkbox" name="sort_by" value="rating">Sort by highest rating
-    <input type="checkbox" name="sort_by" value="review_count">Sort by most reviews
-    <input type="checkbox" name="filter_by" value="45_min_wait">Filter for 45 min wait
-    <input type="checkbox" name="filter_by" value="open_now">Filter for open now
-  </form>
-  <br>
+  <!-- Container to span the whole page -->
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 center">
+        <h2>Find wait times for</h2>
 
-  <!-- Map -->
-  <div id="map"></div>
+        <form class="form-inline" action="/search" method="GET">
+          
+          <div class="input-group form-group">
+            <span class="input-group-addon" id="for-restaurant">For:</span>
+            <input type="text" class="form-control" name="keyword" 
+              placeholder="Restaurant or Food" value="{{ search_term }}" aria-describedby="for-restaurant" required>
+          </div>
 
-  <!-- List Results -->
+          <div class="input-group form-group">
+            <span class="input-group-addon" id="near-location">Near:</span>
+            <input type="text" class="form-control" name="location" 
+              placeholder="Location (default: SF)" value="{{ location_term }}" aria-describedby="near-location">
+          </div>
 
-  {% for business in result %}
-    <div id="{{ business['id'] }}">
-      <h2>{{ business['name'] }}</h2>
+          <button type="submit" class="btn btn-info">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+          <br>
+          <br>
 
-      <p>{{ business['location']['address'][0] }}<br>
-         {{ business['location']['city'] }}, 
-         {{ business['location']['state_code'] }} 
-         {{ business['location']['postal_code'] }}</p>
-      
-      <p>Quoted Wait Time: 
-        {% if business['quoted_wait_time'] != "Not available" %}
-          <!-- e.g. 45 min -->
-          {% if business['quoted_wait_time'] < 60 %}
-            {{ business['quoted_wait_time'] }} min
-          <!-- e.g. 1 hr or 2 hr -->
-          {% elif business['quoted_wait_time'] >= 60 and 
-              business['quoted_wait_time'] % 60 == 0 %}
-            {{ business['quoted_wait_time'] // 60 }} hr
-          <!-- e.g. 2 hr 15 min -->
-          {% elif business['quoted_wait_time'] > 60 and 
-              business['quoted_wait_time'] % 60 != 0 %}
-            {{ business['quoted_wait_time'] // 60 }} hr {{ business['quoted_wait_time'] % 60 }} min
-          {% endif %}
-        {% else %}
-          {{ business['quoted_wait_time'] }}
-        {% endif %}
-      </p>
-      <p>Party Size: {{ business['party_size'] }}</p>
-      <p>Parties Ahead: {{ business['parties_ahead'] }}</p>
-      <p>Reported: {{ business['timestamp'] }}</p>
+          <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#sort">Sort</button>
+          <div id="sort" class="collapse">
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-info">
+                <input type="radio" name="sort_by" autocomplete="off" value="wait_time">Shortest Wait Time
+              </label>
+              <label class="btn btn-info">
+                <input type="radio" name="sort_by" autocomplete="off" value="rating">Highest Rating
+              </label>
+              <label class="btn btn-info">
+                <input type="radio" name="sort_by" autocomplete="off" value="review_count">Most Reviews
+              </label>
+            </div>
+          </div>
+          &nbsp;
+          <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#filter">Filter</button>
+          <div id="filter" class="collapse">
 
-      <p><img src="{{ business['rating_img_url'] }}"/> {{ business['review_count'] }} reviews</p>
-      <p><a href="{{ business['url'] }}" target="_blank"><img src="/static/img/yelp_review_btn_light.png"/></a></p>
-      
-      {% if business['opening_hours'] %}
-        <p>Hours
-        <ul>
-          {% for day in business['opening_hours'] %}
-            <li>{{ day }}</li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p>Hours not available</p>
-      {% endif %}
+            <div class="btn-group" data-toggle="buttons">
+              <label class="btn btn-info">
+                <input type="checkbox" name="filter_by" autocomplete="off" value="open_now">Open now
+              </label>
+              <label class="btn btn-info">
+                <input type="checkbox" name="filter_by" autocomplete="off" value="45_min_wait">45 min
+              </label>
+                <label class="btn btn-info">
+                <input type="checkbox" name="filter_by" autocomplete="off" value="60_min_wait">60 min
+              </label>
+            </div>
+          </div>
+          <hr>
+          <br>
+          <br>
 
-      <p>{{ business['open_now'] }}</p>
-    <br>
+      <!--  <input type="checkbox" name="sort_by" value="wait_time">Sort by shortest wait time
+            <input type="checkbox" name="sort_by" value="rating">Sort by highest rating
+            <input type="checkbox" name="sort_by" value="review_count">Sort by most reviews -->
 
-  </div>
-  {% endfor %}
+      <!--  <input type="checkbox" name="filter_by" value="45_min_wait">Filter for 45 min wait
+            <input type="checkbox" name="filter_by" value="60_min_wait">Filter for 60 min wait
+            <input type="checkbox" name="filter_by" value="open_now">Filter for open now -->
 
+        </form>
+      </div> <!-- center-block -->
+    </div> <!-- row -->
+  </div> <!-- container-fluid -->
+
+
+  <div class="container">
+    
+    <!-- Map -->
+    <div class="row">
+      <div id="map" class="col-xs-12 col-sm-6"></div>
+
+    <!-- List Results -->
+      <div class="col-xs-12 col-sm-6">
+      {% for business in result %}
+        <div id="{{ business['id'] }}">
+          <h2>{{ business['name'] }}</h2>
+
+          <p>{{ business['location']['address'][0] }}<br>
+             {{ business['location']['city'] }}, 
+             {{ business['location']['state_code'] }} 
+             {{ business['location']['postal_code'] }}</p>
+          
+          <p>Quoted Wait Time: 
+            {% if business['quoted_wait_time'] != "Not available" %}
+              <!-- e.g. 45 min -->
+              {% if business['quoted_wait_time'] < 60 %}
+                {{ business['quoted_wait_time'] }} min
+              <!-- e.g. 1 hr or 2 hr -->
+              {% elif business['quoted_wait_time'] >= 60 and 
+                  business['quoted_wait_time'] % 60 == 0 %}
+                {{ business['quoted_wait_time'] // 60 }} hr
+              <!-- e.g. 2 hr 15 min -->
+              {% elif business['quoted_wait_time'] > 60 and 
+                  business['quoted_wait_time'] % 60 != 0 %}
+                {{ business['quoted_wait_time'] // 60 }} hr {{ business['quoted_wait_time'] % 60 }} min
+              {% endif %}
+            {% else %}
+              {{ business['quoted_wait_time'] }}
+            {% endif %}
+          </p>
+          <p>Party Size: {{ business['party_size'] }}</p>
+          <p>Parties Ahead: {{ business['parties_ahead'] }}</p>
+          <p>Reported: {{ business['timestamp'] }}</p>
+
+          <p><img src="{{ business['rating_img_url'] }}"/> {{ business['review_count'] }} reviews</p>
+          <p><a href="{{ business['url'] }}" target="_blank"><img src="/static/img/yelp_review_btn_light.png"/></a></p>
+
+          <p>{{ business['open_now'] }}</p>
+          <br>
+
+        </div> <!-- individual result -->
+      {% endfor %}
+      </div>  <!-- col-xs-12 col-sm-6 -->
+    </div> <!-- row -->
+  </div> <!-- container -->
 {% endblock %}

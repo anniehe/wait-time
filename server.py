@@ -81,15 +81,15 @@ def display_search_results():
     after_loop = datetime.now()
     print after_loop - before_yelp, "TOTAL TIME"
 
-    # Sort by shortest wait time if checkbox is checked
+    # Sort by shortest wait time
     if request.args.get("sort_by") == "wait_time":
         result.sort(key=lambda business: business['quoted_wait_time'])
 
-    # Sort by highest rating if checkbox is checked
+    # Sort by highest rating
     if request.args.get("sort_by") == "rating":
         result.sort(key=lambda business: business['rating'], reverse=True)
 
-    # Sort by highest review if checkbox is checked
+    # Sort by highest review
     if request.args.get("sort_by") == "review_count":
         result.sort(key=lambda business: business['review_count'], reverse=True)
 
@@ -98,6 +98,14 @@ def display_search_results():
         new_result = []
         for business in result:
             if business['quoted_wait_time'] == 45:
+                new_result.append(business)
+        result = new_result
+
+    # Filter by 60 min wait
+    if request.args.get("filter_by") == "60_min_wait":
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] == 60:
                 new_result.append(business)
         result = new_result
 
