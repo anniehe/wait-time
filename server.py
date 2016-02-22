@@ -57,7 +57,7 @@ def display_search_results():
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants",
-                                           limit=2)
+                                           limit=10)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
@@ -304,18 +304,18 @@ def add_wait_info(business):
         if wait_info.party_size:
             business['party_size'] = wait_info.party_size
         else:
-            business['party_size'] = "Not available"
+            business['party_size'] = "N/A"
 
         if wait_info.parties_ahead:
             business['parties_ahead'] = wait_info.parties_ahead
         else:
-            business['parties_ahead'] = "Not available"
+            business['parties_ahead'] = "N/A"
 
     else:
         business['quoted_wait_time'] = "Not available"
-        business['party_size'] = "Not available"
-        business['parties_ahead'] = "Not available"
-        business['timestamp'] = "Not available"
+        business['party_size'] = "N/A"
+        business['parties_ahead'] = "N/A"
+        business['timestamp'] = "N/A"
 
 
 if __name__ == "__main__":

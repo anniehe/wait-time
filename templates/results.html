@@ -96,23 +96,24 @@
     
     <!-- Map -->
     <div class="row">
-      <div id="map" class="col-xs-12 col-sm-7"></div>
+      <div id="map" class="col-xs-12 col-lg-7"></div>
 
     <!-- List Results -->
-      <div class="col-xs-12 col-sm-5">
+      <div class="col-xs-12 col-lg-5">
       {% for business in result %}
-        <div id="{{ business['id'] }}" style="border: 1px solid black">
-          <h3 id="restaurant_name">{{ business['name'] }}</h3>
+        <div id="{{ business['id'] }}" class="result">
+          <p id="open_status">{{ business['open_now'] }}</p>
+          <div id="header">
+            <h3 id="restaurant_name">{{ business['name'] }}</h3>
 
-          <p id="address">{{ business['location']['address'][0] }}<br>
-             {{ business['location']['city'] }}, 
-             {{ business['location']['state_code'] }} 
-             {{ business['location']['postal_code'] }}</p>
-
+            <p id="address">{{ business['location']['address'][0] }}<br>
+               {{ business['location']['city'] }}, 
+               {{ business['location']['state_code'] }} 
+               {{ business['location']['postal_code'] }}</p>
+          </div>
           <div id="wait_info">
-            <p>
+            <p id="quoted_wait">
               <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-              Quoted Wait Time: 
               {% if business['quoted_wait_time'] != "Not available" %}
                 <!-- e.g. 45 min -->
                 {% if business['quoted_wait_time'] < 60 %}
@@ -130,18 +131,26 @@
                 {{ business['quoted_wait_time'] }}
               {% endif %}
             </p>
-            <p>Party Size: {{ business['party_size'] }}</p>
-            <p>Parties Ahead: {{ business['parties_ahead'] }}</p>
-            <p>Reported: {{ business['timestamp'] }}</p>
-            <p>{{ business['open_now'] }}</p>
+            <div class="wait_details wait_box">
+              <p>Reported</p>
+              <p class="wait_value">{{ business['timestamp'] }}</p>
+            </div>
+            <div class="wait_details wait_box">
+              <p>Party Size</p>
+              <p class="wait_value">{{ business['party_size'] }}</p>
+            </div>
+            <div class="wait_details">
+              <p>Parties Ahead</p>
+              <p class="wait_value">{{ business['parties_ahead'] }}</p>
+            </div>
           </div> <!-- wait info -->
 
           <div id="yelp_info">
-            <p><img src="{{ business['rating_img_url'] }}"/> {{ business['review_count'] }} reviews</p>
-            <p><a href="{{ business['url'] }}" target="_blank"><img src="/static/img/yelp_review_btn_light.png"/></a></p>
+            <img src="{{ business['rating_img_url'] }}">
+            <p>{{ business['review_count'] }} reviews</p>
+            <p><a href="{{ business['url'] }}" target="_blank"><img src="/static/img/yelp_review_btn_light.png"></a></p>
           </div> <!-- yelp info -->
           <br>
-
         </div> <!-- individual result -->
       {% endfor %}
       </div>  <!-- col-xs-12 col-sm-6 -->

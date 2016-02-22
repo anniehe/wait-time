@@ -10,16 +10,56 @@ body {
 #map {
   height: 600px;
   width: 650px;
+  margin: 10px;
 }
 
-#restaurant_name {
+#header {
     text-align: center;
 }
 
-#address {
+#open_status {
+    text-align: right;
+}
+
+#wait_info {
+    display: inline-block;
+    margin: 10px;
+}
+
+#yelp_info {
+    display: inline-block;
+    text-align: right;
+    float: right;
+    padding-top: 10px;
+}
+
+#quoted_wait {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.wait_box {
+    padding-right: 5px;
+    border-right: 1px solid black;
+}
+
+.wait_details {
+    display: inline-block;
     text-align: center;
 }
 
+.wait_value {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.result {
+    padding-left: 10px;
+    padding-right:10px;
+    padding-bottom: 10px;
+    border: 1px solid black;
+    margin-top: 10px;
+}
 
 .center {
    text-align: center;

@@ -9,3 +9,7 @@ html, body {
    bottom: 45%;
    margin: auto;
   }
+
+#header {
+    padding-bottom: 20px;
+}
