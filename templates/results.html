@@ -61,23 +61,26 @@
           &nbsp;
           <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#filter">Filter</button>
           <div id="filter" class="collapse">
-
             <div class="btn-group" data-toggle="buttons">
               <label class="btn btn-info">
                 <input type="checkbox" name="filter_by" autocomplete="off" value="open_now">Open now
               </label>
               <label class="btn btn-info">
-                <input type="checkbox" name="filter_by" autocomplete="off" value="45_min_wait">45 min
+                <input type="checkbox" name="filter_by" autocomplete="off" value="15_min_wait">&le; 15 min
+              </label>
+              <label class="btn btn-info">
+                <input type="checkbox" name="filter_by" autocomplete="off" value="30_min_wait">&le; 30 min
+              </label>
+              <label class="btn btn-info">
+                <input type="checkbox" name="filter_by" autocomplete="off" value="45_min_wait">&le; 45 min
               </label>
                 <label class="btn btn-info">
-                <input type="checkbox" name="filter_by" autocomplete="off" value="60_min_wait">60 min
+                <input type="checkbox" name="filter_by" autocomplete="off" value="60_min_wait">&le; 60 min
               </label>
             </div>
           </div>
           <hr>
           <br>
-          <br>
-
       <!--  <input type="checkbox" name="sort_by" value="wait_time">Sort by shortest wait time
             <input type="checkbox" name="sort_by" value="rating">Sort by highest rating
             <input type="checkbox" name="sort_by" value="review_count">Sort by most reviews -->

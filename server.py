@@ -57,7 +57,7 @@ def display_search_results():
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants",
-                                           limit=10)
+                                           limit=3)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
@@ -89,23 +89,39 @@ def display_search_results():
     if request.args.get("sort_by") == "rating":
         result.sort(key=lambda business: business['rating'], reverse=True)
 
-    # Sort by highest review
+    # Sort by most reviews
     if request.args.get("sort_by") == "review_count":
         result.sort(key=lambda business: business['review_count'], reverse=True)
 
-    # Filter by 45 min wait
-    if request.args.get("filter_by") == "45_min_wait":
+    # Filter by <=15 min wait
+    if request.args.get("filter_by") == "15_min_wait":
         new_result = []
         for business in result:
-            if business['quoted_wait_time'] == 45:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 15:
                 new_result.append(business)
         result = new_result
 
-    # Filter by 60 min wait
+    # Filter by <=30 min wait
+    if request.args.get("filter_by") == "30_min_wait":
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 30:
+                new_result.append(business)
+        result = new_result
+
+    # Filter by <=45 min wait
+    if request.args.get("filter_by") == "45_min_wait":
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 45:
+                new_result.append(business)
+        result = new_result
+
+    # Filter by <=60 min wait
     if request.args.get("filter_by") == "60_min_wait":
         new_result = []
         for business in result:
-            if business['quoted_wait_time'] == 60:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 60:
                 new_result.append(business)
         result = new_result
 

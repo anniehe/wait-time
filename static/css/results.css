@@ -23,14 +23,14 @@ body {
 
 #wait_info {
     display: inline-block;
-    margin: 10px;
+    margin: 5px;
 }
 
 #yelp_info {
     display: inline-block;
     text-align: right;
     float: right;
-    padding-top: 10px;
+    padding-top: 40px;
 }
 
 #quoted_wait {
