@@ -2,18 +2,39 @@
 {% block head %}
 
   <title>What's the Wait Time?</title>
+  <link rel="stylesheet" href="../static/css/home.css">
 
 {% endblock %}
 
 
 {% block body %}
+  <!-- SEARCH FORM -->
 
-  <h1>What's the wait time?</h1>
+  <!-- Container-fluid to span the whole page -->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 center-block">
+        <h1>What's the wait time?</h1>
 
-  <form action="/search" method="GET">
-    For: <input type="text" name="keyword" placeholder="Restaurant or Food" required> &nbsp;
-    Near: <input type="text" name="location" placeholder="Location (default: SF)">
-    <input type="submit" value="Let's see!">
-  </form>
+        <form class="form-inline" action="/search" method="GET">
+          
+          <div class="input-group form-group">
+            <span class="input-group-addon" id="for-restaurant">For:</span>
+            <input type="text" class="form-control" name="keyword" 
+              placeholder="Restaurant or Food" aria-describedby="for-restaurant" required>
+          </div>
+
+          <div class="input-group form-group">
+            <span class="input-group-addon" id="near-location">Near:</span>
+            <input type="text" class="form-control" name="location" 
+              placeholder="Location (default: SF)" aria-describedby="near-location">
+          </div>
+
+          <button type="submit" class="btn btn-info">Let's see!</button>
+        </form>
+      </div> <!-- center-block -->
+    </div> <!-- row -->
+  </div> <!-- container-fluid -->
+
 
 {% endblock %}

@@ -57,7 +57,7 @@ def display_search_results():
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants",
-                                           limit=10)
+                                           limit=3)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
@@ -242,30 +242,30 @@ def add_restaurant_open_info(business):
                     # compare the two, if it is that day
                 # take that element and add to dictinoary for the current day
 
-            day_of_week = datetime.now().date().weekday()
+            # day_of_week = datetime.now().date().weekday()
 
-            if day_of_week == 0:
-                day_of_week = "Monday"
-            elif day_of_week == 1:
-                day_of_week = "Tuesday"
-            elif day_of_week == 2:
-                day_of_week = "Wednesday"
-            elif day_of_week == 3:
-                day_of_week = "Thursday"
-            elif day_of_week == 4:
-                day_of_week = "Friday"
-            elif day_of_week == 5:
-                day_of_week = "Saturday"
-            elif day_of_week == 5:
-                day_of_week = "Sunday"
+            # if day_of_week == 0:
+            #     day_of_week = "Monday"
+            # elif day_of_week == 1:
+            #     day_of_week = "Tuesday"
+            # elif day_of_week == 2:
+            #     day_of_week = "Wednesday"
+            # elif day_of_week == 3:
+            #     day_of_week = "Thursday"
+            # elif day_of_week == 4:
+            #     day_of_week = "Friday"
+            # elif day_of_week == 5:
+            #     day_of_week = "Saturday"
+            # elif day_of_week == 5:
+            #     day_of_week = "Sunday"
 
-            for item in opening_hours_info:
-                day_hours_info = item.split(":")
-                day = day_hours_info[0]
-                if day == day_of_week:
-                    day_hours = item
-                    break
-            business['todays_hours'] = day_hours
+            # for item in opening_hours_info:
+            #     day_hours_info = item.split(":")
+            #     day = day_hours_info[0]
+            #     if day == day_of_week:
+            #         day_hours = item
+            #         break
+            # business['todays_hours'] = day_hours
 
         else:
             opening_hours_info = None

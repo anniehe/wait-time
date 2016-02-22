@@ -2,10 +2,10 @@
 {% block head %}
 
   <title>Report Wait Time</title>
+  <link rel="stylesheet" href="../static/css/report.css">
 
-  <script src="https://code.jquery.com/jquery.js"></script>
   <script type="text/javascript" 
-          src="https://maps.googleapis.com/maps/api/js?key={{ key }}&libraries=places">
+    src="https://maps.googleapis.com/maps/api/js?key={{ key }}&libraries=places">
   </script>
   <script src="/static/js/find_restaurant.js"></script>
 
@@ -15,14 +15,83 @@
 
 {% block body %}
 
-  <!-- Wait Time Form -->
+
+<div class="container">
+  <h2>Report Your Wait Time</h2>
+
+  <form role="form" class="form-horizontal" action="/process_report" method="POST">
+
+    <div class="form-group">
+      <label class="col-sm-2" for="find_restaurant">Restaurant</label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" id="find_restaurant" 
+          name="restaurant_input" placeholder="Enter a restaurant" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2" for="party_size">Party Size</label>
+      <div class="col-sm-5">
+        <input type="number" class="form-control" id="party_size" 
+          name="party_size" min="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2" for="parties_ahead">Number of Parties Ahead</label>
+      <div class="col-sm-5">
+        <input type="number" class="form-control" id="parties_ahead" 
+          name="parties_ahead" min="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2">Quoted Wait Time</label>
+      <div class="col-sm-2">
+        <input type="number" class="form-control" name="quoted_hr" min="0" max="4" 
+          placeholder="hr" required>hr
+      </div>
+      <div class="col-sm-2">
+        <input type="number" class="form-control" name="quoted_min" min="0" max="59" 
+          placeholder="min" required>min
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-7">
+        <button type="submit" class="btn btn-info pull-right">Report</button>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Make restaurant name and location hidden -->
+    <!-- Use these values to search yelp for yelp_id -->
+    <div class="form-group">
+      <label class="col-sm-2" for="restaurant_name">Restaurant Name</label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" id="restaurant_name" name="restaurant_name">
+      </div>
+    </div>
+   
+    <div class="form-group">
+      <label class="col-sm-2" for="location">Location</label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" id="location" name="location">
+      </div>
+    </div>
+  
+  </form>
+</div>
+
+
+<!-- 
   <h1>Report Your Wait Time</h1>
 
   <form action="/process_report" method="POST">
 
     <label>Restaurant: <br>
       <input id="find_restaurant" type="text" name="restaurant_input" 
-             placeholder="Enter a restaurant" size="50" required>
+        placeholder="Enter a restaurant" size="50" required>
     </label><br><br>
 
     <label>Party Size: <br>
@@ -40,10 +109,8 @@
     
     <input type="submit" value="Report"><br><br>
 
-    <!-- Make restaurant name and location hidden later -->
-    <!-- Use these values to search yelp for yelp_id -->
     <input id="restaurant_name" type="text" name="restaurant_name">
     <input id="location" type="text" name="location"><br><br>
   </form>
-
+ --> 
 {% endblock %}

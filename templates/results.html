@@ -2,6 +2,7 @@
 {% block head %}
 
   <title>Results</title>
+  <link rel="stylesheet" href="../static/css/results.css">
 
   <style>
     html, body {
@@ -14,7 +15,6 @@
     }
   </style>
 
-  <script src="https://code.jquery.com/jquery.js"></script>
   <script>
     var resultObject = {{ result_dict|tojson|safe }};
   </script>
@@ -91,8 +91,6 @@
             <li>{{ day }}</li>
           {% endfor %}
         </ul>
-        </p>
-        <p>Today's Hours: {{ business['todays_hours'] }}</p>
       {% else %}
         <p>Hours not available</p>
       {% endif %}
