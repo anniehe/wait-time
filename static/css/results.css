@@ -3,14 +3,23 @@ html, body {
   width: 100%;
 }
 
-#map {
-  height: 500px;
-  width: 500px;
-}
-
 body {
     padding-top: 50px;
 }
+
+#map {
+  height: 600px;
+  width: 650px;
+}
+
+#restaurant_name {
+    text-align: center;
+}
+
+#address {
+    text-align: center;
+}
+
 
 .center {
    text-align: center;
