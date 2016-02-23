@@ -22,6 +22,10 @@ body {
     text-align: center;
 }
 
+.btn-group {
+    margin: 5px;
+}
+
 #open_status {
     text-align: right;
 }
