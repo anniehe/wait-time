@@ -38,7 +38,7 @@
               placeholder="Location (default: SF)" value="{{ location_term }}" aria-describedby="near-location">
           </div>
 
-          <button type="submit" class="btn btn-info">
+          <button id="search-button" type="submit" class="btn btn-info">
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
           </button>
           <br>
@@ -156,7 +156,7 @@
           <br>
         </div> <!-- individual result -->
       {% endfor %}
-      </div>  <!-- col-xs-12 col-sm-6 -->
+      </div>  <!-- col-xs-12 col-lg-5 -->
     </div> <!-- row -->
   </div> <!-- container -->
 {% endblock %}

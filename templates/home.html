@@ -2,7 +2,7 @@
 {% block head %}
 
   <title>What's the Wait Time?</title>
-  <link rel="stylesheet" href="../static/css/home.css">
+  <link rel="stylesheet" href="./static/css/home.css">
 
 {% endblock %}
 
@@ -20,17 +20,17 @@
           
           <div class="input-group form-group">
             <span class="input-group-addon" id="for-restaurant">For:</span>
-            <input type="text" class="form-control" name="keyword" 
+            <input type="text" class="form-control" id="keyword-input" name="keyword" 
               placeholder="Restaurant or Food" aria-describedby="for-restaurant" required>
           </div>
 
           <div class="input-group form-group">
             <span class="input-group-addon" id="near-location">Near:</span>
-            <input type="text" class="form-control" name="location" 
+            <input type="text" class="form-control" id="location-input" name="location" 
               placeholder="Location (default: SF)" aria-describedby="near-location">
           </div>
 
-          <button type="submit" class="btn btn-info">Let's see!</button>
+          <button id="search-button" type="submit" class="btn btn-info">Let's see!</button>
         </form>
       </div> <!-- center-block -->
     </div> <!-- row -->

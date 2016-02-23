@@ -47,7 +47,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">Nom Now!</a>
+        <a class="navbar-brand" href="/">NomNow!</a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
@@ -71,5 +71,17 @@
   {% block body %}
   {% endblock %}
 
+  <script>
+    function pageLoader(evt) {
+      evt.preventDefault();
+
+      console.log("HERE");
+      $(".loader").fadeIn("slow");
+
+      $(this).unbind('submit').submit();
+    }
+
+    $("#search-button").on("submit", pageLoader);
+  </script>
 </body>
 </html>

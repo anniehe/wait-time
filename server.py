@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 
@@ -57,7 +57,7 @@ def display_search_results():
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants",
-                                           limit=3)
+                                           limit=10)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
@@ -93,8 +93,19 @@ def display_search_results():
     if request.args.get("sort_by") == "review_count":
         result.sort(key=lambda business: business['review_count'], reverse=True)
 
+    # List of selected filters
+    filter_values = request.args.getlist("filter_by")
+
+    # Filter by open now
+    if "open_now" in filter_values:
+        new_result = []
+        for business in result:
+            if business['open_now'] == "Open now":
+                new_result.append(business)
+        result = new_result
+
     # Filter by <=15 min wait
-    if request.args.get("filter_by") == "15_min_wait":
+    if "15_min_wait" in filter_values:
         new_result = []
         for business in result:
             if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 15:
@@ -102,7 +113,7 @@ def display_search_results():
         result = new_result
 
     # Filter by <=30 min wait
-    if request.args.get("filter_by") == "30_min_wait":
+    if "30_min_wait" in filter_values:
         new_result = []
         for business in result:
             if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 30:
@@ -110,7 +121,7 @@ def display_search_results():
         result = new_result
 
     # Filter by <=45 min wait
-    if request.args.get("filter_by") == "45_min_wait":
+    if "45_min_wait" in filter_values:
         new_result = []
         for business in result:
             if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 45:
@@ -118,18 +129,10 @@ def display_search_results():
         result = new_result
 
     # Filter by <=60 min wait
-    if request.args.get("filter_by") == "60_min_wait":
+    if "60_min_wait" in filter_values:
         new_result = []
         for business in result:
             if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 60:
-                new_result.append(business)
-        result = new_result
-
-    # Filter by open now
-    if request.args.get("filter_by") == "open_now":
-        new_result = []
-        for business in result:
-            if business['open_now'] == "Open now":
                 new_result.append(business)
         result = new_result
 
