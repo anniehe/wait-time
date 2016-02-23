@@ -2,7 +2,7 @@
 {% block head %}
 
   <title>Results</title>
-  <link rel="stylesheet" href="../static/css/results.css">
+  <link rel="stylesheet" href="/static/css/results.css">
   <script>
     var resultObject = {{ result_dict|tojson|safe }};
   </script>
@@ -26,7 +26,7 @@
         <form class="form-inline" action="/search" method="GET">
           
           <!-- Keyword -->
-          <div class="input-group form-group">
+          <div class="input-group input-group-sm form-group">
             <span class="input-group-addon" id="for-restaurant">For:</span>
             <input type="text" class="form-control" name="keyword" 
               placeholder="Restaurant or Food" value="{{ search_term }}" 
@@ -34,7 +34,7 @@
           </div>
 
           <!-- Location -->
-          <div class="input-group form-group">
+          <div class="input-group input-group-sm form-group">
             <span class="input-group-addon" id="near-location">Near:</span>
             <input type="text" class="form-control" name="location" 
               placeholder="Location (default: SF)" value="{{ location_term }}" 
@@ -42,7 +42,7 @@
           </div>
 
           <!-- Submit -->
-          <button id="search-button" type="submit" class="btn btn-info">
+          <button id="search-button" type="submit" class="btn btn-info btn-sm">
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
           </button>
           <br>
@@ -111,7 +111,7 @@
       <div id="map" class="col-xs-12 col-lg-7"></div>
 
       <!-- LIST RESULTS -->
-      <div class="col-xs-12 col-lg-5">
+      <div class="col-xs-12 col-lg-5" id="list">
       {% for business in result %}
         <div id="{{ business['id'] }}" class="result">
           <p id="open_status">{{ business['open_now'] }}</p>

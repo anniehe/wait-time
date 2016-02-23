@@ -13,6 +13,11 @@ body {
   margin: 10px;
 }
 
+#list {
+    height: 600px;
+    overflow: scroll;
+}
+
 #header {
     text-align: center;
 }
