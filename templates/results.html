@@ -18,7 +18,6 @@
 
   <!-- SEARCH FORM -->
 
-  <!-- Container to span the whole page -->
   <div class="container">
     <div class="row">
       <div class="col-xs-12 center">
@@ -26,82 +25,92 @@
 
         <form class="form-inline" action="/search" method="GET">
           
+          <!-- Keyword -->
           <div class="input-group form-group">
             <span class="input-group-addon" id="for-restaurant">For:</span>
             <input type="text" class="form-control" name="keyword" 
-              placeholder="Restaurant or Food" value="{{ search_term }}" aria-describedby="for-restaurant" required>
+              placeholder="Restaurant or Food" value="{{ search_term }}" 
+              aria-describedby="for-restaurant" required>
           </div>
 
+          <!-- Location -->
           <div class="input-group form-group">
             <span class="input-group-addon" id="near-location">Near:</span>
             <input type="text" class="form-control" name="location" 
-              placeholder="Location (default: SF)" value="{{ location_term }}" aria-describedby="near-location">
+              placeholder="Location (default: SF)" value="{{ location_term }}" 
+              aria-describedby="near-location">
           </div>
 
+          <!-- Submit -->
           <button id="search-button" type="submit" class="btn btn-info">
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
           </button>
           <br>
           <br>
 
-          <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#sort">Sort</button>
+          <!-- Sort -->
+          <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" 
+            data-target="#sort">Sort</button>
           <div id="sort" class="collapse">
             <div class="btn-group" data-toggle="buttons">
               <label class="btn btn-info">
-                <input type="radio" name="sort_by" autocomplete="off" value="wait_time">Shortest Wait Time
+                <input type="radio" name="sort_by" autocomplete="off" 
+                  value="wait_time">Shortest Wait Time
               </label>
               <label class="btn btn-info">
-                <input type="radio" name="sort_by" autocomplete="off" value="rating">Highest Rating
+                <input type="radio" name="sort_by" autocomplete="off" 
+                  value="rating">Highest Rating
               </label>
               <label class="btn btn-info">
-                <input type="radio" name="sort_by" autocomplete="off" value="review_count">Most Reviews
+                <input type="radio" name="sort_by" autocomplete="off" 
+                  value="review_count">Most Reviews
               </label>
             </div>
           </div>
           &nbsp;
-          <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#filter">Filter</button>
+
+          <!-- Filter -->
+          <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" 
+            data-target="#filter">Filter</button>
           <div id="filter" class="collapse">
             <div class="btn-group" data-toggle="buttons">
               <label class="btn btn-info">
-                <input type="checkbox" name="filter_by" autocomplete="off" value="open_now">Open now
+                <input type="checkbox" name="filter_by" autocomplete="off" 
+                  value="open_now">Open now
               </label>
               <label class="btn btn-info">
-                <input type="checkbox" name="filter_by" autocomplete="off" value="15_min_wait">&le; 15 min
+                <input type="checkbox" name="filter_by" autocomplete="off" 
+                  value="15_min_wait">&le; 15 min
               </label>
               <label class="btn btn-info">
-                <input type="checkbox" name="filter_by" autocomplete="off" value="30_min_wait">&le; 30 min
+                <input type="checkbox" name="filter_by" autocomplete="off" 
+                  value="30_min_wait">&le; 30 min
               </label>
               <label class="btn btn-info">
-                <input type="checkbox" name="filter_by" autocomplete="off" value="45_min_wait">&le; 45 min
+                <input type="checkbox" name="filter_by" autocomplete="off" 
+                  value="45_min_wait">&le; 45 min
               </label>
                 <label class="btn btn-info">
-                <input type="checkbox" name="filter_by" autocomplete="off" value="60_min_wait">&le; 60 min
+                <input type="checkbox" name="filter_by" autocomplete="off" 
+                  value="60_min_wait">&le; 60 min
               </label>
             </div>
           </div>
           <hr>
           <br>
-      <!--  <input type="checkbox" name="sort_by" value="wait_time">Sort by shortest wait time
-            <input type="checkbox" name="sort_by" value="rating">Sort by highest rating
-            <input type="checkbox" name="sort_by" value="review_count">Sort by most reviews -->
-
-      <!--  <input type="checkbox" name="filter_by" value="45_min_wait">Filter for 45 min wait
-            <input type="checkbox" name="filter_by" value="60_min_wait">Filter for 60 min wait
-            <input type="checkbox" name="filter_by" value="open_now">Filter for open now -->
-
         </form>
-      </div> <!-- center-block -->
+      </div> <!-- col-xs-12 center -->
     </div> <!-- row -->
-  </div> <!-- container-fluid -->
+  </div> <!-- container -->
 
 
   <div class="container">
     
-    <!-- Map -->
     <div class="row">
+      <!-- MAP -->
       <div id="map" class="col-xs-12 col-lg-7"></div>
 
-    <!-- List Results -->
+      <!-- LIST RESULTS -->
       <div class="col-xs-12 col-lg-5">
       {% for business in result %}
         <div id="{{ business['id'] }}" class="result">
@@ -128,7 +137,8 @@
                 <!-- e.g. 2 hr 15 min -->
                 {% elif business['quoted_wait_time'] > 60 and 
                     business['quoted_wait_time'] % 60 != 0 %}
-                  {{ business['quoted_wait_time'] // 60 }} hr {{ business['quoted_wait_time'] % 60 }} min
+                  {{ business['quoted_wait_time'] // 60 }} hr 
+                  {{ business['quoted_wait_time'] % 60 }} min
                 {% endif %}
               {% else %}
                 {{ business['quoted_wait_time'] }}
@@ -156,7 +166,8 @@
           <br>
         </div> <!-- individual result -->
       {% endfor %}
-      </div>  <!-- col-xs-12 col-lg-5 -->
+      </div>  <!-- list results -->
     </div> <!-- row -->
   </div> <!-- container -->
+
 {% endblock %}

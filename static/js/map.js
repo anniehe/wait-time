@@ -128,6 +128,3 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos, map) {
                         'Error: Your browser doesn\'t support geolocation.');
   infoWindow.setMap(map);
 }
-
-
-// google.maps.event.addDomListener(window, 'load', initMap);
