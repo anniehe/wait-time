@@ -4,6 +4,19 @@
   <title>What's the Wait Time?</title>
   <link rel="stylesheet" href="/static/css/home.css">
 
+  <style>
+    #pusheen {
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      background: url("/static/img/pusheen_eat.gif") 50% 50% no-repeat rgb(253,241,229);
+      display: none;
+    }
+  </style>
+
 {% endblock %}
 
 
@@ -16,7 +29,7 @@
       <div class="col-xs-12 center-block">
         <h1 id="header">What's the wait time?</h1>
 
-        <form class="form-inline" action="/search" method="GET">
+        <form id="search-form" class="form-inline" action="/search" method="GET">
           
           <div class="input-group form-group">
             <span class="input-group-addon" id="for-restaurant">For:</span>
@@ -35,6 +48,20 @@
       </div> <!-- center-block -->
     </div> <!-- row -->
   </div> <!-- container-fluid -->
+
+
+  <script>
+    function pageLoader(evt) {
+      evt.preventDefault();
+
+      console.log("HERE");
+      $("#pusheen").show();
+
+      $(this).unbind('submit').submit();
+    }
+
+    $("#search-form").submit(pageLoader);
+  </script>
 
 
 {% endblock %}

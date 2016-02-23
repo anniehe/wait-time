@@ -8,13 +8,6 @@
   <script src="https://code.jquery.com/jquery.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-  <!-- display loading gif while page loads -->
-  <script>
-    $(window).load(function() {
-      $(".loader").fadeOut("slow");
-    })
-  </script>
-
   <style>
     .loader {
       position: fixed;
@@ -23,7 +16,7 @@
       width: 100%;
       height: 100%;
       z-index: 9999;
-      background: url('/static/img/pusheen_eat.gif') 50% 50% no-repeat rgb(253,241,229);
+      background: url("/static/img/pusheen_food.gif") 50% 50% no-repeat rgb(253,241,229);
     }
   </style>
 
@@ -34,6 +27,7 @@
 </head>
 <body>
 
+  <div id="pusheen"></div>
   <div class="loader"></div>
 
   <!-- Navbar -->
@@ -71,17 +65,12 @@
   {% block body %}
   {% endblock %}
 
+  <!-- display loading gif while page loads -->
   <script>
-    function pageLoader(evt) {
-      evt.preventDefault();
-
-      console.log("HERE");
-      $(".loader").fadeIn("slow");
-
-      $(this).unbind('submit').submit();
-    }
-
-    $("#search-button").on("submit", pageLoader);
+    $(window).load(function() {
+      $(".loader").fadeOut("slow");
+    })
   </script>
+
 </body>
 </html>
