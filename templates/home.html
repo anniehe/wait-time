@@ -4,19 +4,6 @@
   <title>What's the Wait Time?</title>
   <link rel="stylesheet" href="/static/css/home.css">
 
-  <style>
-    #pusheen {
-      position: fixed;
-      left: 0px;
-      top: 0px;
-      width: 100%;
-      height: 100%;
-      z-index: 9999;
-      background: url("/static/img/pusheen_eat.gif") 50% 50% no-repeat rgb(253,241,229);
-      display: none;
-    }
-  </style>
-
 {% endblock %}
 
 
@@ -43,7 +30,7 @@
               placeholder="Location (default: SF)" aria-describedby="near-location">
           </div>
 
-          <button id="search-button" type="submit" class="btn btn-info">Let's see!</button>
+          <button type="submit" class="btn btn-info">Let's see!</button>
         </form>
       </div> <!-- center-block -->
     </div> <!-- row -->
@@ -51,16 +38,12 @@
 
 
   <script>
-    function pageLoader(evt) {
+    function showPusheen(evt) {
       evt.preventDefault();
-
-      console.log("HERE");
-      $("#pusheen").show();
-
+      $("#hungry_pusheen").show();
       $(this).unbind('submit').submit();
     }
-
-    $("#search-form").submit(pageLoader);
+    $("#search-form").submit(showPusheen);
   </script>
 
 
