@@ -57,11 +57,13 @@
     </div><!-- /.container-fluid -->
   </nav>
 
-  <p>
-  {% for message in get_flashed_messages() %}
-    {{ message }}
-  {% endfor %}
-  </p>
+  <div id="flash">
+    <p>
+      {% for message in get_flashed_messages() %}
+        {{ message }}
+      {% endfor %}
+    </p>
+  </div>
 
   {% block body %}
   {% endblock %}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, jsonify
+from flask import Flask, render_template, request, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 
@@ -57,7 +57,7 @@ def display_search_results():
     search_results = yelp_api.search_query(term=search_term,
                                            location=location_term,
                                            category_filter="food,restaurants",
-                                           limit=2)
+                                           limit=10)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
@@ -81,60 +81,13 @@ def display_search_results():
     after_loop = datetime.now()
     print after_loop - before_yelp, "TOTAL TIME"
 
-    # Sort by shortest wait time
-    if request.args.get("sort_by") == "wait_time":
-        result.sort(key=lambda business: business['quoted_wait_time'])
+    # Handle sorting
+    sort_value = request.args.get("sort_by")
+    result = sorted_result(result, sort_value)
 
-    # Sort by highest rating
-    if request.args.get("sort_by") == "rating":
-        result.sort(key=lambda business: business['rating'], reverse=True)
-
-    # Sort by most reviews
-    if request.args.get("sort_by") == "review_count":
-        result.sort(key=lambda business: business['review_count'], reverse=True)
-
-    # List of selected filters
-    filter_values = request.args.getlist("filter_by")
-
-    # Filter by open now
-    if "open_now" in filter_values:
-        new_result = []
-        for business in result:
-            if business['open_now'] == "Open now":
-                new_result.append(business)
-        result = new_result
-
-    # Filter by <=15 min wait
-    if "15_min_wait" in filter_values:
-        new_result = []
-        for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 15:
-                new_result.append(business)
-        result = new_result
-
-    # Filter by <=30 min wait
-    if "30_min_wait" in filter_values:
-        new_result = []
-        for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 30:
-                new_result.append(business)
-        result = new_result
-
-    # Filter by <=45 min wait
-    if "45_min_wait" in filter_values:
-        new_result = []
-        for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 45:
-                new_result.append(business)
-        result = new_result
-
-    # Filter by <=60 min wait
-    if "60_min_wait" in filter_values:
-        new_result = []
-        for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 60:
-                new_result.append(business)
-        result = new_result
+    # Handle filtering
+    selected_filters = request.args.getlist("filter_by")
+    result = filtered_result(result, selected_filters)
 
     # Add result to result_dict, which will be converted to a JSON through Jinja.
     result_dict = {'result': result}
@@ -162,7 +115,7 @@ def process_wait_time_form():
     restaurant_name = request.form.get("restaurant_name")
     location = request.form.get("location")
 
-    # Yelp API call from restaurant name and location values
+    # Yelp API call with restaurant name and location values
     # parsed from selected restaurant using autocomplete
     # to get the corresponding yelp id
     search_results = yelp_api.search_query(term=restaurant_name,
@@ -335,6 +288,70 @@ def add_wait_info(business):
         business['party_size'] = "N/A"
         business['parties_ahead'] = "N/A"
         business['timestamp'] = "N/A"
+
+
+def sorted_result(result, sort_value):
+    """Returns result sorted by the selected value."""
+
+    # Sort by shortest wait time
+    if sort_value == "wait_time":
+        result.sort(key=lambda business: business['quoted_wait_time'])
+
+    # Sort by highest rating
+    if sort_value == "rating":
+        result.sort(key=lambda business: business['rating'], reverse=True)
+
+    # Sort by most reviews
+    if sort_value == "review_count":
+        result.sort(key=lambda business: business['review_count'], reverse=True)
+
+    return result
+
+
+def filtered_result(result, selected_filters):
+    """Returns filtered result."""
+
+    # Filter by open now
+    if "open_now" in selected_filters:
+        new_result = []
+        for business in result:
+            if business['open_now'] == "Open now":
+                new_result.append(business)
+        result = new_result
+
+    # Filter by <=15 min wait
+    if "15_min_wait" in selected_filters:
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 15:
+                new_result.append(business)
+        result = new_result
+
+    # Filter by <=30 min wait
+    if "30_min_wait" in selected_filters:
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 30:
+                new_result.append(business)
+        result = new_result
+
+    # Filter by <=45 min wait
+    if "45_min_wait" in selected_filters:
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 45:
+                new_result.append(business)
+        result = new_result
+
+    # Filter by <=60 min wait
+    if "60_min_wait" in selected_filters:
+        new_result = []
+        for business in result:
+            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 60:
+                new_result.append(business)
+        result = new_result
+
+    return result
 
 
 if __name__ == "__main__":
