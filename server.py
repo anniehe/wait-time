@@ -13,6 +13,7 @@ import humanize
 
 import phonenumbers
 
+from celery import Celery
 
 ### GOOGLE MAPS API ###
 BROWSER_KEY = os.environ['GOOGLE_BROWSER_KEY']
@@ -35,6 +36,17 @@ app.secret_key = "SHHHHH"
 
 # Raises an error an undefined variable in Jinja2 is used
 app.jinja_env.undefined = StrictUndefined
+
+
+### Celery ###
+
+# Celery is an asynchronous task queue with real-time processing and task scheduling.
+# A Celery client is created and will run with the Flask app.
+# Celery communicates with Celery workers through Redis, the message broker.
+# Celery workers will fetch the task from the message queue and execute the task.
+
+celery = Celery(app)
+celery.config_from_object('celeryconfig')
 
 
 @app.route("/")
@@ -260,7 +272,9 @@ def add_wait_info(business):
     # Add wait time info to business dictionary
     if wait_info:
         business['quoted_wait_time'] = wait_info.quoted_minutes
-        business['timestamp'] = humanize.naturaltime(datetime.utcnow() - wait_info.timestamp)
+        # business['timestamp'] = humanize.naturaltime(datetime.utcnow() - wait_info.timestamp)
+        business['timestamp'] = wait_info.timestamp
+        business['timestamp_value'] = wait_info.timestamp
 
         if wait_info.party_size:
             business['party_size'] = wait_info.party_size
@@ -276,7 +290,9 @@ def add_wait_info(business):
         business['quoted_wait_time'] = "Not available"
         business['party_size'] = "N/A"
         business['parties_ahead'] = "N/A"
-        business['timestamp'] = "N/A"
+        business['timestamp'] = datetime(2222, 2, 2)
+        # business['timestamp'] = "N/A"
+        business['timestamp_value'] = datetime(2222, 2, 2)
 
 
 def sorted_result(result, sort_value):
@@ -285,6 +301,10 @@ def sorted_result(result, sort_value):
     # Sort by shortest wait time
     if sort_value == "wait_time":
         result.sort(key=lambda business: business['quoted_wait_time'])
+
+    # Sort by recently reported
+    if sort_value == "recent_report":
+        result.sort(key=lambda business: business['timestamp_value'])
 
     # Sort by highest rating
     if sort_value == "rating":
