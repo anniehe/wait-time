@@ -16,13 +16,16 @@ class WaitTime(db.Model):
     wait_time_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     yelp_id = db.Column(db.String(200), nullable=False)
     party_size = db.Column(db.Integer, nullable=True)
-    quoted_minutes = db.Column(db.Integer, nullable=False)
     parties_ahead = db.Column(db.Integer, nullable=True)
+    quoted_minutes = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    estimated_time = db.Column(db.DateTime, nullable=False)
+    phone_number = db.Column(db.String(100), nullable=True)
     still_waiting = db.Column(db.Boolean, default=True)
+    msg_sent = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
-        """Show information about the reported wait."""
+        """Provide useful representation of reported wait when printed."""
 
         return "<WaitTime wait_time_id=%s yelp_id=%s quoted_minutes=%s>" % (
             self.wait_time_id, self.yelp_id, self.quoted_minutes)
@@ -37,7 +40,7 @@ def connect_to_db(app):
     # Configure to use our PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///wait'
     app.config['SQLAlCHEMY_ECHO'] = True
-    # If want to tracking modifications, set it to True
+    # If want to track modifications, set it to True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)

@@ -8,8 +8,10 @@ from yelpapi import YelpAPI
 from google_api import get_place_id, get_opening_hours_info
 import os
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import humanize
+
+import phonenumbers
 
 
 ### GOOGLE MAPS API ###
@@ -127,7 +129,6 @@ def process_wait_time_form():
     restaurant_info = search_results['businesses'][0]
 
     yelp_id = str(restaurant_info['id'])
-
     quoted_hr = int(request.form.get("quoted_hr"))
     quoted_min = int(request.form.get("quoted_min"))
 
@@ -137,44 +138,32 @@ def process_wait_time_form():
     else:
         quoted_minutes = quoted_min
 
-    # Check if a value for party_size was entered
-    try:
-        party_size = int(request.form.get("party_size"))
-    # If no value for party_size was entered
-    except ValueError:
-        # Check if a value for parties_ahead was entered
-        try:
-            parties_ahead = int(request.form.get("parties_ahead"))
-        # If no values entered for both party_size and parties_ahead,
-        # instantiate a WaitTime object with all available values
-        except ValueError:
-            reported_wait_info = WaitTime(yelp_id=yelp_id,
-                                          quoted_minutes=quoted_minutes)
-        # If a value for parties_ahead was entered,
-        # instantiate a WaitTime object with all available values
-        else:
-            reported_wait_info = WaitTime(yelp_id=yelp_id,
-                                          parties_ahead=parties_ahead,
-                                          quoted_minutes=quoted_minutes)
-
-    # If a value for party_size was entered
+    if request.form.get("phone_number"):
+        raw_phone_number = str(request.form.get("phone_number"))
+        phone_number = convert_to_e164(raw_phone_number)
     else:
-        # Check if a value for parties_ahead was entered
-        try:
-            parties_ahead = int(request.form.get("parties_ahead"))
-        # If no values entered for parties_ahead,
-        # instantiate a WaitTime object with all available values
-        except ValueError:
-            reported_wait_info = WaitTime(yelp_id=yelp_id,
-                                          party_size=party_size,
-                                          quoted_minutes=quoted_minutes)
-        # If values for both party_size and parties_ahead were entered,
-        # instantiate a WaitTime object with all available values
-        else:
-            reported_wait_info = WaitTime(yelp_id=yelp_id,
-                                          party_size=party_size,
-                                          quoted_minutes=quoted_minutes,
-                                          parties_ahead=parties_ahead)
+        phone_number = None
+
+    if request.form.get("party_size"):
+        party_size = int(request.form.get("party_size"))
+    else:
+        party_size = None
+
+    if request.form.get("parties_ahead"):
+        parties_ahead = int(request.form.get("parties_ahead"))
+    else:
+        parties_ahead = None
+
+    timestamp = datetime.utcnow()
+    timediff = timedelta(minutes=quoted_minutes)
+    estimated_time = timestamp + timediff
+
+    reported_wait_info = WaitTime(yelp_id=yelp_id,
+                                  party_size=party_size,
+                                  quoted_minutes=quoted_minutes,
+                                  parties_ahead=parties_ahead,
+                                  estimated_time=estimated_time,
+                                  phone_number=phone_number)
 
     db.session.add(reported_wait_info)
     db.session.commit()
@@ -352,6 +341,36 @@ def filtered_result(result, selected_filters):
         result = new_result
 
     return result
+
+
+def convert_to_e164(raw_phone):
+    """Formats phone numbers to E.164 format for Twilio.
+
+        >>> convert_to_e164("4235432224")
+        u'+14235432224'
+
+        >>> convert_to_e164("(423)543-2224")
+        u'+14235432224'
+
+        >>> convert_to_e164("423.543.2224")
+        u'+14235432224'
+
+    """
+
+    if not raw_phone:
+        return
+
+    if raw_phone[0] == '+':
+        # Phone number may already be in E.164 format.
+        parse_type = None
+    else:
+        # If no country code information present, assume it's a US number
+        parse_type = "US"
+
+    phone_representation = phonenumbers.parse(raw_phone, parse_type)
+
+    return phonenumbers.format_number(phone_representation,
+                                      phonenumbers.PhoneNumberFormat.E164)
 
 
 if __name__ == "__main__":
