@@ -24,8 +24,8 @@ def load_wait_times():
                      party_size=6,
                      quoted_minutes=60,
                      parties_ahead=5,
-                     timestamp=datetime(2016, 2, 25, 20, 50),
-                     estimated_time=datetime(2016, 2, 25, 21, 50))
+                     timestamp=datetime(2016, 2, 25, 20, 00),
+                     estimated_time=datetime(2016, 2, 25, 21, 00))
 
     wait4 = WaitTime(yelp_id="katana-ya-san-francisco",
                      party_size=3,
@@ -67,8 +67,8 @@ def load_wait_times():
                      party_size=2,
                      quoted_minutes=75,
                      parties_ahead=4,
-                     timestamp=datetime(2016, 2, 25, 22, 15),
-                     estimated_time=datetime(2016, 2, 25, 23, 30))
+                     timestamp=datetime(2016, 2, 25, 21, 15),
+                     estimated_time=datetime(2016, 2, 25, 22, 30))
 
     db.session.add_all([wait1, wait2, wait3, wait4,
                         wait5, wait6, wait7, wait8,

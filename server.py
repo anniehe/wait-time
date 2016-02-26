@@ -9,7 +9,7 @@ from google_api import get_place_id, get_opening_hours_info
 import os
 
 from datetime import datetime, timedelta
-import humanize
+import arrow
 
 import phonenumbers
 
@@ -272,8 +272,7 @@ def add_wait_info(business):
     # Add wait time info to business dictionary
     if wait_info:
         business['quoted_wait_time'] = wait_info.quoted_minutes
-        # business['timestamp'] = humanize.naturaltime(datetime.utcnow() - wait_info.timestamp)
-        business['timestamp'] = wait_info.timestamp
+        business['timestamp'] = arrow.get(wait_info.timestamp).humanize()
         business['timestamp_value'] = wait_info.timestamp
 
         if wait_info.party_size:
@@ -290,21 +289,20 @@ def add_wait_info(business):
         business['quoted_wait_time'] = "Not available"
         business['party_size'] = "N/A"
         business['parties_ahead'] = "N/A"
-        business['timestamp'] = datetime(2222, 2, 2)
-        # business['timestamp'] = "N/A"
-        business['timestamp_value'] = datetime(2222, 2, 2)
+        business['timestamp'] = "N/A"
+        business['timestamp_value'] = datetime(2000, 2, 2)
 
 
 def sorted_result(result, sort_value):
     """Returns result sorted by the selected value."""
 
+    # Sort by recently reported
+    if sort_value == "recently_reported":
+        result.sort(key=lambda business: business['timestamp_value'], reverse=True)
+
     # Sort by shortest wait time
     if sort_value == "wait_time":
         result.sort(key=lambda business: business['quoted_wait_time'])
-
-    # Sort by recently reported
-    if sort_value == "recent_report":
-        result.sort(key=lambda business: business['timestamp_value'])
 
     # Sort by highest rating
     if sort_value == "rating":
