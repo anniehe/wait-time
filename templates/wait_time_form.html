@@ -25,10 +25,10 @@
       <form role="form" class="form-horizontal" action="/process_report" method="POST">
 
         <div class="form-group">
-          <label class="col-sm-2" for="find_restaurant">Restaurant</label>
+          <label class="col-sm-2" for="find_restaurant">Restaurant*</label>
           <div class="col-sm-4">
             <input type="text" class="form-control" id="find_restaurant" 
-              name="restaurant_input" placeholder="Enter a restaurant" required>
+              name="restaurant_input" placeholder="Find your restaurant" required>
           </div>
         </div>
 
@@ -49,14 +49,14 @@
         </div>
 
         <div class="form-group">
-          <label class="col-sm-2">Quoted Wait Time</label>
+          <label class="col-sm-2">Quoted Wait Time*</label>
           <div class="col-sm-2">
             <input type="number" class="form-control" name="quoted_hr" min="0" max="4" 
-              placeholder="hr" required>hr
+              placeholder="0-4" required>hr
           </div>
           <div class="col-sm-2">
             <input type="number" class="form-control" name="quoted_min" min="0" max="59" 
-              placeholder="min" required>min
+              placeholder="0-59" required>min
           </div>
         </div>
 
@@ -65,6 +65,7 @@
           <div class="col-sm-4">
             <input type="text" class="form-control" id="phone_number" 
               name="phone_number" minlength="10" maxlength="13" placeholder="(000)000-0000">
+              Enter your phone number to receive a text reminder when your estimated wait time is up.
           </div>
         </div>
 

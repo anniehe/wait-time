@@ -11,9 +11,11 @@ import os
 from datetime import datetime, timedelta
 import arrow
 
+from twilio_api import send_sms
 import phonenumbers
 
-from celery import Celery
+from tasks import celery
+
 
 ### GOOGLE MAPS API ###
 BROWSER_KEY = os.environ['GOOGLE_BROWSER_KEY']
@@ -36,17 +38,6 @@ app.secret_key = "SHHHHH"
 
 # Raises an error an undefined variable in Jinja2 is used
 app.jinja_env.undefined = StrictUndefined
-
-
-### Celery ###
-
-# Celery is an asynchronous task queue with real-time processing and task scheduling.
-# A Celery client is created and will run with the Flask app.
-# Celery communicates with Celery workers through Redis, the message broker.
-# Celery workers will fetch the task from the message queue and execute the task.
-
-celery = Celery(app)
-celery.config_from_object('celeryconfig')
 
 
 @app.route("/")
@@ -153,6 +144,8 @@ def process_wait_time_form():
     if request.form.get("phone_number"):
         raw_phone_number = str(request.form.get("phone_number"))
         phone_number = convert_to_e164(raw_phone_number)
+        # Text message sent to phone number at the time wait time is reported
+        send_sms(phone_number)
     else:
         phone_number = None
 
@@ -183,6 +176,7 @@ def process_wait_time_form():
     flash("Thanks for reporting your wait time!")
 
     return redirect("/")
+
 
 
 ### HELPER FUNCTIONS ###
@@ -399,3 +393,6 @@ if __name__ == "__main__":
     DebugToolbarExtension(app)
 
     app.run()
+
+    # Connecting instance of Celery to Flask app
+    celery.init_app(app)
