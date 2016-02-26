@@ -13,7 +13,7 @@ import arrow
 import threading
 
 
-from twilio_api import send_sms
+from twilio_api import send_thank_you_sms, send_reminder_sms
 import phonenumbers
 
 from tasks import celery
@@ -137,21 +137,29 @@ def process_wait_time_form():
     quoted_hr = int(request.form.get("quoted_hr"))
     quoted_min = int(request.form.get("quoted_min"))
 
-    # Convert quoted wait time into one value
+    # Convert quoted wait time into one value for the database
     if quoted_hr != 0:
         quoted_minutes = quoted_min + (quoted_hr * 60)
     else:
         quoted_minutes = quoted_min
 
+    # Time logic for sms
     quoted_seconds = quoted_minutes * 60
 
-    body = "You waited %d min already. You should check if your table is ready at %s!" % (quoted_minutes, restaurant_name)
+    if quoted_hr and not quoted_min:
+        quoted_time = str(quoted_hr) + " hr"
+    elif quoted_hr and quoted_min:
+        quoted_time = str(quoted_hr) + " hr " + str(quoted_min) + " min"
+    elif quoted_min and not quoted_hr:
+        quoted_time = str(quoted_min) + " min"
 
     if request.form.get("phone_number"):
         raw_phone_number = str(request.form.get("phone_number"))
         phone_number = convert_to_e164(raw_phone_number)
-        # Text message sent to phone number at the time wait time is reported
-        threading.Timer(quoted_seconds, send_sms, args=[phone_number, body]).start()
+        # Send thank you sms
+        send_thank_you_sms(phone_number, restaurant_name, quoted_time)
+        # Send sms reminder after quoted time is up
+        threading.Timer(quoted_seconds, send_reminder_sms, args=[phone_number, quoted_time, restaurant_name]).start()
     else:
         phone_number = None
 
