@@ -12,8 +12,6 @@ from datetime import datetime, timedelta
 import arrow
 import threading
 
-from tasks import celery
-
 
 ### FLASK APP ###
 app = Flask(__name__)
@@ -142,7 +140,12 @@ def process_wait_time_form():
         # Send thank you sms
         send_thank_you_sms(phone_number, restaurant_name, quoted_time)
         # Send sms reminder after quoted time is up
-        threading.Timer(quoted_seconds, send_reminder_sms, args=[phone_number, quoted_time, restaurant_name]).start()
+        send_sms_timer = threading.Timer(
+            quoted_seconds,
+            send_reminder_sms,
+            args=[phone_number, quoted_time, restaurant_name]
+        )
+        send_sms_timer.start()
     else:
         phone_number = None
 
@@ -320,7 +323,8 @@ def filtered_result(result, selected_filters):
     if "15_min_wait" in selected_filters:
         new_result = []
         for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 15:
+            if (business['quoted_wait_time'] != "Not available" and
+                    business['quoted_wait_time'] <= 15):
                 new_result.append(business)
         result = new_result
 
@@ -328,7 +332,8 @@ def filtered_result(result, selected_filters):
     if "30_min_wait" in selected_filters:
         new_result = []
         for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 30:
+            if (business['quoted_wait_time'] != "Not available" and
+                    business['quoted_wait_time'] <= 30):
                 new_result.append(business)
         result = new_result
 
@@ -336,7 +341,8 @@ def filtered_result(result, selected_filters):
     if "45_min_wait" in selected_filters:
         new_result = []
         for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 45:
+            if (business['quoted_wait_time'] != "Not available" and
+                    business['quoted_wait_time'] <= 45):
                 new_result.append(business)
         result = new_result
 
@@ -344,7 +350,8 @@ def filtered_result(result, selected_filters):
     if "60_min_wait" in selected_filters:
         new_result = []
         for business in result:
-            if business['quoted_wait_time'] != "Not available" and business['quoted_wait_time'] <= 60:
+            if (business['quoted_wait_time'] != "Not available" and
+                    business['quoted_wait_time'] <= 60):
                 new_result.append(business)
         result = new_result
 
@@ -359,6 +366,3 @@ if __name__ == "__main__":
     DebugToolbarExtension(app)
 
     app.run()
-
-    # Connecting instance of Celery to Flask app
-    celery.init_app(app)
