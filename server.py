@@ -4,32 +4,15 @@ from jinja2 import StrictUndefined
 
 from model import WaitTime, connect_to_db, db
 
-from yelpapi import YelpAPI
-from google_api import get_place_id, get_opening_hours_info
-import os
+from yelp_api import yelp
+from google_api import get_place_id, get_opening_hours_info, BROWSER_KEY
+from twilio_api import send_thank_you_sms, send_reminder_sms, convert_to_e164
 
 from datetime import datetime, timedelta
 import arrow
 import threading
 
-
-from twilio_api import send_thank_you_sms, send_reminder_sms
-import phonenumbers
-
 from tasks import celery
-
-
-### GOOGLE MAPS API ###
-BROWSER_KEY = os.environ['GOOGLE_BROWSER_KEY']
-
-
-### YELP API ###
-CONSUMER_KEY = os.environ['YELP_CONSUMER_KEY']
-CONSUMER_SECRET = os.environ['YELP_CONSUMER_SECRET']
-TOKEN = os.environ['YELP_TOKEN']
-TOKEN_SECRET = os.environ['YELP_TOKEN_SECRET']
-
-yelp_api = YelpAPI(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET)
 
 
 ### FLASK APP ###
@@ -61,10 +44,10 @@ def display_search_results():
 
     before_yelp = datetime.now()
     # Yelp API call from user input values
-    search_results = yelp_api.search_query(term=search_term,
-                                           location=location_term,
-                                           category_filter="food,restaurants",
-                                           limit=10)
+    search_results = yelp.search_query(term=search_term,
+                                       location=location_term,
+                                       category_filter="food,restaurants",
+                                       limit=10)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
@@ -125,10 +108,10 @@ def process_wait_time_form():
     # Yelp API call with restaurant name and location values
     # parsed from selected restaurant using autocomplete
     # to get the corresponding yelp id
-    search_results = yelp_api.search_query(term=restaurant_name,
-                                           location=location,
-                                           category_filter="food,restaurants",
-                                           limit=1)
+    search_results = yelp.search_query(term=restaurant_name,
+                                       location=location,
+                                       category_filter="food,restaurants",
+                                       limit=1)
 
     # restaurant_info is a dictionary
     restaurant_info = search_results['businesses'][0]
@@ -366,36 +349,6 @@ def filtered_result(result, selected_filters):
         result = new_result
 
     return result
-
-
-def convert_to_e164(raw_phone):
-    """Formats phone numbers to E.164 format for Twilio.
-
-        >>> convert_to_e164("4235432224")
-        u'+14235432224'
-
-        >>> convert_to_e164("(423)543-2224")
-        u'+14235432224'
-
-        >>> convert_to_e164("423.543.2224")
-        u'+14235432224'
-
-    """
-
-    if not raw_phone:
-        return
-
-    if raw_phone[0] == '+':
-        # Phone number may already be in E.164 format.
-        parse_type = None
-    else:
-        # If no country code information present, assume it's a US number
-        parse_type = "US"
-
-    phone_representation = phonenumbers.parse(raw_phone, parse_type)
-
-    return phonenumbers.format_number(phone_representation,
-                                      phonenumbers.PhoneNumberFormat.E164)
 
 
 if __name__ == "__main__":
