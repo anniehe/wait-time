@@ -9,7 +9,7 @@ TWILIO_NUMBER = os.environ['TWILIO_NUMBER']
 client = TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN)
 
 
-def send_sms(phone_number):
+def send_sms(phone_number, body):
     client.messages.create(to=phone_number,
                            from_=TWILIO_NUMBER,
-                           body="Hello there! Thanks for reporting your wait time!")
+                           body=body)

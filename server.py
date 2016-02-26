@@ -10,6 +10,8 @@ import os
 
 from datetime import datetime, timedelta
 import arrow
+import threading
+
 
 from twilio_api import send_sms
 import phonenumbers
@@ -141,11 +143,15 @@ def process_wait_time_form():
     else:
         quoted_minutes = quoted_min
 
+    quoted_seconds = quoted_minutes * 60
+
+    body = "You waited %d min already. You should check if your table is ready at %s!" % (quoted_minutes, restaurant_name)
+
     if request.form.get("phone_number"):
         raw_phone_number = str(request.form.get("phone_number"))
         phone_number = convert_to_e164(raw_phone_number)
         # Text message sent to phone number at the time wait time is reported
-        send_sms(phone_number)
+        threading.Timer(quoted_seconds, send_sms, args=[phone_number, body]).start()
     else:
         phone_number = None
 
@@ -176,7 +182,6 @@ def process_wait_time_form():
     flash("Thanks for reporting your wait time!")
 
     return redirect("/")
-
 
 
 ### HELPER FUNCTIONS ###
