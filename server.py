@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from model import WaitTime, connect_to_db, db
 
 from yelp_api import yelp
-from google_api import get_place_id, get_opening_hours_info, BROWSER_KEY
+from google_api import is_open_now, BROWSER_KEY
 from twilio_api import send_thank_you_sms, send_reminder_sms, convert_to_e164
 
 from datetime import datetime, timedelta
@@ -57,7 +57,7 @@ def display_search_results():
     for business in result:
 
         before_google = datetime.now()
-        add_restaurant_open_info(business)
+        add_open_status(business)
         after_google = datetime.now()
         print after_google - before_google, "GOOGLE"
 
@@ -180,8 +180,8 @@ def process_wait_time_form():
 
 ### HELPER FUNCTIONS ###
 
-def add_restaurant_open_info(business):
-    """Add opening hours and open now information to the business dictionary."""
+def add_open_status(business):
+    """Add open status at the current time to the business dictionary."""
 
     # Find matching Google Places info for the Yelp result
     name = business['name']
@@ -193,60 +193,16 @@ def add_restaurant_open_info(business):
     keyword = "%s %s %s" % (name, address, city)
     location = "%f,%f" % (location_lat, location_lng)
 
-    # Get place_id from Google Places API for the Yelp result
-    # to check for opening hours and open now info
-    place_id = get_place_id(keyword, location)
-
-    if not place_id:
-        opening_hours_info = None
+    open_now = is_open_now(keyword, location)
+    # open_now is True, False, or None
+    if open_now:
+        open_now = "Open now"
+    elif open_now is None:
         open_now = "Open now unknown"
     else:
-        restaurant_hours_info = get_opening_hours_info(place_id)
-        if restaurant_hours_info:
-            opening_hours_info, open_now = restaurant_hours_info
-            if open_now is True:
-                open_now = "Open now"
-            elif open_now is False:
-                open_now = "Closed"
+        open_now = "Closed"
 
-            # opening_hours_info is a list of day:hoursopen-hoursclose
-            # loop over the list
-                # for item in string, slice and grab everything up until the colon
-                    # grab today's day using datetime
-                    # compare the two, if it is that day
-                # take that element and add to dictinoary for the current day
-
-            # day_of_week = datetime.now().date().weekday()
-
-            # if day_of_week == 0:
-            #     day_of_week = "Monday"
-            # elif day_of_week == 1:
-            #     day_of_week = "Tuesday"
-            # elif day_of_week == 2:
-            #     day_of_week = "Wednesday"
-            # elif day_of_week == 3:
-            #     day_of_week = "Thursday"
-            # elif day_of_week == 4:
-            #     day_of_week = "Friday"
-            # elif day_of_week == 5:
-            #     day_of_week = "Saturday"
-            # elif day_of_week == 5:
-            #     day_of_week = "Sunday"
-
-            # for item in opening_hours_info:
-            #     day_hours_info = item.split(":")
-            #     day = day_hours_info[0]
-            #     if day == day_of_week:
-            #         day_hours = item
-            #         break
-            # business['todays_hours'] = day_hours
-
-        else:
-            opening_hours_info = None
-            open_now = "Open now unknown"
-
-    # Add opening hours and open now info to dictionary
-    business['opening_hours'] = opening_hours_info
+    # Add open now info to dictionary
     business['open_now'] = open_now
 
 
