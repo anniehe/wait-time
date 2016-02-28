@@ -63,7 +63,7 @@
           <label class="col-sm-2" for="phone_number">Phone Number</label>
           <div class="col-sm-4">
             <input type="text" class="form-control" id="phone_number" 
-              name="phone_number" minlength="10" maxlength="14" placeholder="(000) 000-0000" 
+              name="phone_number" minlength="10" maxlength="14" placeholder="(XXX) XXX-XXXX" 
                 onfocusout="validatePhoneNumber(this.value)">
               Enter your phone number to receive a text reminder when your estimated wait time is up.
           </div>
@@ -79,14 +79,14 @@
         <div class="form-group">
           <label class="col-sm-2" for="restaurant_name">Restaurant Name</label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="restaurant_name" name="restaurant_name">
+            <input type="text" class="form-control" id="restaurant_name" name="restaurant_name" readonly>
           </div>
         </div>
        
         <div class="form-group">
           <label class="col-sm-2" for="location">Location</label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="location" name="location">
+            <input type="text" class="form-control" id="location" name="location" readonly>
           </div>
         </div>
       
@@ -100,9 +100,11 @@
       // Enable report button if phone number is in valid format.
       if (phoneNumberInput.match(phoneNumberFormat)) {
         $("#report").prop("disabled", false);
+        $("#report").focus();
       // Enable report button if no phone number inputted.
       } else if (phoneNumberInput === "") {
         $("#report").prop("disabled", false);
+        $("#report").focus();
       // Report button remains disabled if invalid phone number.
       } else {
         alert("Phone number is invalid.");
