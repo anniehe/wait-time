@@ -1,4 +1,5 @@
 import os
+import twilio
 from twilio.rest import TwilioRestClient
 import phonenumbers
 
@@ -18,9 +19,13 @@ def send_thank_you_sms(phone_number, restaurant_name, quoted_time):
             "happen to those who wait. We'll send you a reminder when "
             "your quoted wait time of %s is up. Hang in there!") % (restaurant_name, quoted_time)
 
-    client.messages.create(to=phone_number,
-                           from_=TWILIO_NUMBER,
-                           body=body)
+    try:
+        client.messages.create(to=phone_number,
+                               from_=TWILIO_NUMBER,
+                               body=body)
+
+    except twilio.TwilioRestException as e:
+        print e
 
 
 def send_reminder_sms(phone_number, quoted_time, restaurant_name):
@@ -30,9 +35,13 @@ def send_reminder_sms(phone_number, quoted_time, restaurant_name):
             "check if your table is ready at %s. Enjoy your nomming! "
             "Nom nom nom!") % (quoted_time, restaurant_name)
 
-    client.messages.create(to=phone_number,
-                           from_=TWILIO_NUMBER,
-                           body=body)
+    try:
+        client.messages.create(to=phone_number,
+                               from_=TWILIO_NUMBER,
+                               body=body)
+
+    except twilio.TwilioRestException as e:
+        print e
 
 
 def convert_to_e164(raw_phone):

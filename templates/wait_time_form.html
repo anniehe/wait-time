@@ -9,7 +9,6 @@
   </script>
   <script src="/static/js/find_restaurant.js"></script>
 
-
 {% endblock %}
 
 
@@ -28,7 +27,7 @@
           <label class="col-sm-2" for="find_restaurant">Restaurant*</label>
           <div class="col-sm-4">
             <input type="text" class="form-control" id="find_restaurant" 
-              name="restaurant_input" placeholder="Find your restaurant" required>
+              name="restaurant_input" placeholder="Find your restaurant" autofocus required>
           </div>
         </div>
 
@@ -64,20 +63,19 @@
           <label class="col-sm-2" for="phone_number">Phone Number</label>
           <div class="col-sm-4">
             <input type="text" class="form-control" id="phone_number" 
-              name="phone_number" minlength="10" maxlength="13" placeholder="(000)000-0000">
+              name="phone_number" minlength="10" maxlength="14" placeholder="(000) 000-0000" 
+                onfocusout="validatePhoneNumber(this.value)">
               Enter your phone number to receive a text reminder when your estimated wait time is up.
           </div>
         </div>
 
         <div class="form-group">
           <div class="col-sm-6">
-            <button type="submit" class="btn btn-info pull-right">Report</button>
+            <button id="report" type="submit" class="btn btn-info pull-right" disabled>Report</button>
           </div>
         </div>
         <hr>
 
-        <!-- Make restaurant name and location hidden -->
-        <!-- Use these values to search yelp for yelp_id -->
         <div class="form-group">
           <label class="col-sm-2" for="restaurant_name">Restaurant Name</label>
           <div class="col-sm-4">
@@ -95,5 +93,22 @@
       </form>
     </div>
   </div>
+
+  <script>
+    function validatePhoneNumber(phoneNumberInput) {
+      var phoneNumberFormat = /^[\+]?[1]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/;
+      // Enable report button if phone number is in valid format.
+      if (phoneNumberInput.match(phoneNumberFormat)) {
+        $("#report").prop("disabled", false);
+      // Enable report button if no phone number inputted.
+      } else if (phoneNumberInput === "") {
+        $("#report").prop("disabled", false);
+      // Report button remains disabled if invalid phone number.
+      } else {
+        alert("Phone number is invalid.");
+        $("#phone_number").focus();
+      }
+    }
+  </script>
 
 {% endblock %}
