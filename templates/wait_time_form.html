@@ -17,82 +17,91 @@
   <!-- WAIT TIME REPORT FORM -->
 
   <div class="container-fluid">
-    <div class="row col-xs-12 col-sm-offset-3">
+    <div class="row col-xs-12">
       
-      <div class="col-xs-12 col-sm-offset-1" id="header"><h2>Report Your Wait Time</h2></div>
+      <div class="col-xs-12" id="header"><h2>Report Your Wait Time</h2></div>
 
       <form role="form" class="form-horizontal" action="/process_report" method="POST">
 
         <div class="form-group">
-          <label class="col-sm-2" for="find_restaurant">Restaurant*</label>
-          <div class="col-sm-4">
+          <label class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-2 col-xs-12" 
+            for="find_restaurant">Restaurant*</label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
             <input type="text" class="form-control" id="find_restaurant" 
-              name="restaurant_input" placeholder="Find your restaurant" autofocus required>
+              name="find_restaurant" placeholder="Find your restaurant" autofocus required>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-2" for="party_size">Party Size</label>
-          <div class="col-sm-4">
+          <label class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-2 col-xs-12" 
+            for="party_size">Party Size</label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
             <input type="number" class="form-control" id="party_size" 
               name="party_size" min="0">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-2" for="parties_ahead">Number of Parties Ahead</label>
-          <div class="col-sm-4">
+          <label class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-2 col-xs-12" 
+            for="parties_ahead">Number of Parties Ahead</label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
             <input type="number" class="form-control" id="parties_ahead" 
               name="parties_ahead" min="0">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-2">Quoted Wait Time*</label>
-          <div class="col-sm-2">
+          <label class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-2 col-xs-12">
+              Quoted Wait Time*</label>
+          <div class="col-md-2 col-sm-3 col-xs-12">
             <input type="number" class="form-control" name="quoted_hr" min="0" max="4" 
               placeholder="0-4" required>hr
           </div>
-          <div class="col-sm-2">
+          <div class="col-md-2 col-sm-3 col-xs-12">
             <input type="number" class="form-control" name="quoted_min" min="0" max="59" 
               placeholder="0-59" required>min
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-2" for="phone_number">Phone Number</label>
-          <div class="col-sm-4">
+          <label class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-2 col-xs-12" 
+            for="phone_number">Phone Number</label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
             <input type="text" class="form-control" id="phone_number" 
               name="phone_number" minlength="10" maxlength="14" placeholder="(XXX) XXX-XXXX" 
-                onfocusout="validatePhoneNumber(this.value)">
+              onfocusout="validatePhoneNumber(this.value)">
               Enter your phone number to receive a text reminder when your estimated wait time is up.
           </div>
         </div>
 
         <div class="form-group">
-          <div class="col-sm-6">
-            <button id="report" type="submit" class="btn btn-info pull-right" disabled>Report</button>
+          <div class="col-md-9 col-sm-10 col-xs-12">
+            <button id="report" type="submit" class="btn btn-info pull-right" 
+              disabled>Report</button>
           </div>
         </div>
         <hr>
 
         <div class="form-group">
-          <label class="col-sm-2" for="restaurant_name">Restaurant Name</label>
-          <div class="col-sm-4">
-            <input type="text" class="form-control" id="restaurant_name" name="restaurant_name" readonly>
+          <label class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-2 col-xs-12" 
+            for="restaurant_name">Restaurant Name</label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <input type="text" class="form-control" id="restaurant_name" 
+              name="restaurant_name" readonly>
           </div>
         </div>
        
         <div class="form-group">
-          <label class="col-sm-2" for="location">Location</label>
-          <div class="col-sm-4">
+          <label class="col-md-2 col-md-offset-3 col-sm-2 col-sm-offset-2 col-xs-12" 
+            for="location">Location</label>
+          <div class="col-md-4 col-sm-6 col-xs-12">
             <input type="text" class="form-control" id="location" name="location" readonly>
           </div>
         </div>
       
       </form>
-    </div>
-  </div>
+    </div> <!-- row -->
+  </div> <!-- container -->
 
   <script>
     function validatePhoneNumber(phoneNumberInput) {
