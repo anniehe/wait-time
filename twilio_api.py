@@ -26,6 +26,7 @@ def send_thank_you_sms(phone_number, restaurant_name, quoted_time):
 
     except twilio.TwilioRestException as e:
         print e
+        return "Error"
 
 
 def send_reminder_sms(phone_number, quoted_time, restaurant_name):
@@ -42,6 +43,7 @@ def send_reminder_sms(phone_number, quoted_time, restaurant_name):
 
     except twilio.TwilioRestException as e:
         print e
+        return "Error"
 
 
 def convert_to_e164(raw_phone):
