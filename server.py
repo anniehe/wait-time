@@ -8,7 +8,7 @@ from yelp_api import yelp
 from google_api import is_open_now, BROWSER_KEY
 from twilio_api import send_thank_you_sms, send_reminder_sms, convert_to_e164
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import arrow
 import threading
 
@@ -41,7 +41,7 @@ def display_search_results():
         location_term = "San Francisco"
 
     before_yelp = datetime.now()
-    # Yelp API call from user input values
+    # Yelp API call with user input values
     search_results = yelp.search_query(term=search_term,
                                        location=location_term,
                                        category_filter="food,restaurants",
@@ -49,20 +49,19 @@ def display_search_results():
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
-    # result is the list of business dictionaries
+    # result is the list of restaurant dictionaries
     result = search_results['businesses']
 
-    # Add opening hours/open now info from Google Places and wait time info from
-    # database to each business dictionary
-    for business in result:
+    # For each restaurant, add its open status and wait time info to their dictionary
+    for restaurant in result:
 
         before_google = datetime.now()
-        add_open_status(business)
+        add_open_status(restaurant)
         after_google = datetime.now()
         print after_google - before_google, "GOOGLE"
 
         before_wait = datetime.now()
-        add_wait_info(business)
+        add_wait_info(restaurant)
         after_wait = datetime.now()
         print after_wait - before_wait, "WAIT"
 
@@ -98,35 +97,35 @@ def display_wait_time_form():
 
 @app.route("/process_report", methods=["POST"])
 def process_wait_time_form():
-    """Adds wait time information into database if for valid restaurant."""
+    """Adds wait time information into database for a restaurant."""
 
     restaurant_name = request.form.get("restaurant_name")
     location = request.form.get("location")
 
     # Yelp API call with restaurant name and location values
-    # parsed from selected restaurant using autocomplete
-    # to get the corresponding yelp id
+    # parsed from the selected restaurant to get the corresponding yelp id
     search_results = yelp.search_query(term=restaurant_name,
                                        location=location,
                                        category_filter="food,restaurants",
                                        limit=1)
 
-    # restaurant_info is a dictionary
+    # restaurant_info is a dictionary of the restaurant's info
     restaurant_info = search_results['businesses'][0]
 
     yelp_id = str(restaurant_info['id'])
     quoted_hr = int(request.form.get("quoted_hr"))
     quoted_min = int(request.form.get("quoted_min"))
 
-    # Convert quoted wait time into one value for the database
+    # Convert quoted wait time into one value (quoted_minutes) for the database
     if quoted_hr != 0:
         quoted_minutes = quoted_min + (quoted_hr * 60)
     else:
         quoted_minutes = quoted_min
 
-    # Time logic for sms
+    # Interval for sms timer
     quoted_seconds = quoted_minutes * 60
 
+    # Covert quoted wait time into string value for customized sms
     if quoted_hr and not quoted_min:
         quoted_time = str(quoted_hr) + " hr"
     elif quoted_hr and quoted_min:
@@ -137,9 +136,9 @@ def process_wait_time_form():
     if request.form.get("phone_number"):
         raw_phone_number = str(request.form.get("phone_number"))
         phone_number = convert_to_e164(raw_phone_number)
-        # Send thank you sms
+        # Send thank you sms immediately
         send_thank_you_sms(phone_number, restaurant_name, quoted_time)
-        # Send sms reminder after quoted time is up
+        # Send reminder sms after quoted time is up
         send_sms_timer = threading.Timer(
             quoted_seconds,
             send_reminder_sms,
@@ -159,15 +158,10 @@ def process_wait_time_form():
     else:
         parties_ahead = None
 
-    timestamp = datetime.utcnow()
-    timediff = timedelta(minutes=quoted_minutes)
-    estimated_time = timestamp + timediff
-
     reported_wait_info = WaitTime(yelp_id=yelp_id,
                                   party_size=party_size,
-                                  quoted_minutes=quoted_minutes,
                                   parties_ahead=parties_ahead,
-                                  estimated_time=estimated_time,
+                                  quoted_minutes=quoted_minutes,
                                   phone_number=phone_number)
 
     db.session.add(reported_wait_info)
@@ -180,15 +174,15 @@ def process_wait_time_form():
 
 ### HELPER FUNCTIONS ###
 
-def add_open_status(business):
-    """Add open status at the current time to the business dictionary."""
+def add_open_status(restaurant):
+    """Add restaurant's open status at the current time to the its dictionary."""
 
-    # Find matching Google Places info for the Yelp result
-    name = business['name']
-    address = business['location']['address'][0]
-    city = business['location']['city']
-    location_lat = business['location']['coordinate']['latitude']
-    location_lng = business['location']['coordinate']['longitude']
+    # Find matching Google Places open status info for the Yelp restaurant result
+    name = restaurant['name']
+    address = restaurant['location']['address'][0]
+    city = restaurant['location']['city']
+    location_lat = restaurant['location']['coordinate']['latitude']
+    location_lng = restaurant['location']['coordinate']['longitude']
 
     keyword = "%s %s %s" % (name, address, city)
     location = "%f,%f" % (location_lat, location_lng)
@@ -203,13 +197,13 @@ def add_open_status(business):
         open_now = "Closed"
 
     # Add open now info to dictionary
-    business['open_now'] = open_now
+    restaurant['open_now'] = open_now
 
 
-def add_wait_info(business):
-    """Add wait time information from database to the business dictionary."""
+def add_wait_info(restaurant):
+    """Add restaurant's wait time information from database to its dictionary."""
 
-    yelp_id = business['id']
+    yelp_id = restaurant['id']
 
     # Find the most recent wait time info for a restaurant from the database.
     # For records with the same timestamp, fetch the largest quoted wait time.
@@ -218,28 +212,28 @@ def add_wait_info(business):
                  .first()
                  )
 
-    # Add wait time info to business dictionary
+    # Add wait time info to dictionary
     if wait_info:
-        business['quoted_wait_time'] = wait_info.quoted_minutes
-        business['timestamp'] = arrow.get(wait_info.timestamp).humanize()
-        business['timestamp_value'] = wait_info.timestamp
+        restaurant['quoted_wait_time'] = wait_info.quoted_minutes
+        restaurant['timestamp'] = arrow.get(wait_info.timestamp).humanize()
+        restaurant['timestamp_value'] = wait_info.timestamp
 
         if wait_info.party_size:
-            business['party_size'] = wait_info.party_size
+            restaurant['party_size'] = wait_info.party_size
         else:
-            business['party_size'] = "N/A"
+            restaurant['party_size'] = "N/A"
 
         if wait_info.parties_ahead:
-            business['parties_ahead'] = wait_info.parties_ahead
+            restaurant['parties_ahead'] = wait_info.parties_ahead
         else:
-            business['parties_ahead'] = "N/A"
+            restaurant['parties_ahead'] = "N/A"
 
     else:
-        business['quoted_wait_time'] = "Not available"
-        business['party_size'] = "N/A"
-        business['parties_ahead'] = "N/A"
-        business['timestamp'] = "N/A"
-        business['timestamp_value'] = datetime(2000, 2, 2)
+        restaurant['quoted_wait_time'] = "Not available"
+        restaurant['party_size'] = "N/A"
+        restaurant['parties_ahead'] = "N/A"
+        restaurant['timestamp'] = "N/A"
+        restaurant['timestamp_value'] = datetime(2000, 2, 2)
 
 
 def sorted_result(result, sort_value):
@@ -247,19 +241,19 @@ def sorted_result(result, sort_value):
 
     # Sort by recently reported
     if sort_value == "recently_reported":
-        result.sort(key=lambda business: business['timestamp_value'], reverse=True)
+        result.sort(key=lambda restaurant: restaurant['timestamp_value'], reverse=True)
 
     # Sort by shortest wait time
     if sort_value == "wait_time":
-        result.sort(key=lambda business: business['quoted_wait_time'])
+        result.sort(key=lambda restaurant: restaurant['quoted_wait_time'])
 
     # Sort by highest rating
     if sort_value == "rating":
-        result.sort(key=lambda business: business['rating'], reverse=True)
+        result.sort(key=lambda restaurant: restaurant['rating'], reverse=True)
 
     # Sort by most reviews
     if sort_value == "review_count":
-        result.sort(key=lambda business: business['review_count'], reverse=True)
+        result.sort(key=lambda restaurant: restaurant['review_count'], reverse=True)
 
     return result
 
@@ -270,45 +264,45 @@ def filtered_result(result, selected_filters):
     # Filter by open now
     if "open_now" in selected_filters:
         new_result = []
-        for business in result:
-            if business['open_now'] == "Open now":
-                new_result.append(business)
+        for restaurant in result:
+            if restaurant['open_now'] == "Open now":
+                new_result.append(restaurant)
         result = new_result
 
     # Filter by <=15 min wait
     if "15_min_wait" in selected_filters:
         new_result = []
-        for business in result:
-            if (business['quoted_wait_time'] != "Not available" and
-                    business['quoted_wait_time'] <= 15):
-                new_result.append(business)
+        for restaurant in result:
+            if (restaurant['quoted_wait_time'] != "Not available" and
+                    restaurant['quoted_wait_time'] <= 15):
+                new_result.append(restaurant)
         result = new_result
 
     # Filter by <=30 min wait
     if "30_min_wait" in selected_filters:
         new_result = []
-        for business in result:
-            if (business['quoted_wait_time'] != "Not available" and
-                    business['quoted_wait_time'] <= 30):
-                new_result.append(business)
+        for restaurant in result:
+            if (restaurant['quoted_wait_time'] != "Not available" and
+                    restaurant['quoted_wait_time'] <= 30):
+                new_result.append(restaurant)
         result = new_result
 
     # Filter by <=45 min wait
     if "45_min_wait" in selected_filters:
         new_result = []
-        for business in result:
-            if (business['quoted_wait_time'] != "Not available" and
-                    business['quoted_wait_time'] <= 45):
-                new_result.append(business)
+        for restaurant in result:
+            if (restaurant['quoted_wait_time'] != "Not available" and
+                    restaurant['quoted_wait_time'] <= 45):
+                new_result.append(restaurant)
         result = new_result
 
     # Filter by <=60 min wait
     if "60_min_wait" in selected_filters:
         new_result = []
-        for business in result:
-            if (business['quoted_wait_time'] != "Not available" and
-                    business['quoted_wait_time'] <= 60):
-                new_result.append(business)
+        for restaurant in result:
+            if (restaurant['quoted_wait_time'] != "Not available" and
+                    restaurant['quoted_wait_time'] <= 60):
+                new_result.append(restaurant)
         result = new_result
 
     return result

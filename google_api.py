@@ -6,6 +6,8 @@ SERVER_KEY = os.environ['GOOGLE_SERVER_KEY']
 
 
 def is_open_now(keyword, location):
+    """Given the keyword and location, returns a restaurant's open status (boolean), if available."""
+
     payload = {'key': SERVER_KEY,
                'query': keyword,
                'location': location,

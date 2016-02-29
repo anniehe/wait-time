@@ -128,56 +128,56 @@
 
       <!-- LIST RESULTS -->
       <div class="col-xs-12 col-lg-5" id="list">
-      {% for business in result %}
-        <div id="{{ business['id'] }}" class="result">
-          <p id="open_status">{{ business['open_now'] }}</p>
+      {% for restaurant in result %}
+        <div id="{{ restaurant['id'] }}" class="result">
+          <p id="open_status">{{ restaurant['open_now'] }}</p>
           <div id="header">
-            <h3 id="restaurant_name">{{ business['name'] }}</h3>
+            <h3 id="restaurant_name">{{ restaurant['name'] }}</h3>
 
-            <p id="address">{{ business['location']['address'][0] }}<br>
-               {{ business['location']['city'] }}, 
-               {{ business['location']['state_code'] }} 
-               {{ business['location']['postal_code'] }}</p>
+            <p id="address">{{ restaurant['location']['address'][0] }}<br>
+               {{ restaurant['location']['city'] }}, 
+               {{ restaurant['location']['state_code'] }} 
+               {{ restaurant['location']['postal_code'] }}</p>
           </div>
           <div id="wait_info">
             <p id="quoted_wait">
               <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-              {% if business['quoted_wait_time'] != "Not available" %}
+              {% if restaurant['quoted_wait_time'] != "Not available" %}
                 <!-- e.g. 45 min -->
-                {% if business['quoted_wait_time'] < 60 %}
-                  {{ business['quoted_wait_time'] }} min
+                {% if restaurant['quoted_wait_time'] < 60 %}
+                  {{ restaurant['quoted_wait_time'] }} min
                 <!-- e.g. 1 hr or 2 hr -->
-                {% elif business['quoted_wait_time'] >= 60 and 
-                    business['quoted_wait_time'] % 60 == 0 %}
-                  {{ business['quoted_wait_time'] // 60 }} hr
+                {% elif restaurant['quoted_wait_time'] >= 60 and 
+                    restaurant['quoted_wait_time'] % 60 == 0 %}
+                  {{ restaurant['quoted_wait_time'] // 60 }} hr
                 <!-- e.g. 2 hr 15 min -->
-                {% elif business['quoted_wait_time'] > 60 and 
-                    business['quoted_wait_time'] % 60 != 0 %}
-                  {{ business['quoted_wait_time'] // 60 }} hr 
-                  {{ business['quoted_wait_time'] % 60 }} min
+                {% elif restaurant['quoted_wait_time'] > 60 and 
+                    restaurant['quoted_wait_time'] % 60 != 0 %}
+                  {{ restaurant['quoted_wait_time'] // 60 }} hr 
+                  {{ restaurant['quoted_wait_time'] % 60 }} min
                 {% endif %}
               {% else %}
-                {{ business['quoted_wait_time'] }}
+                {{ restaurant['quoted_wait_time'] }}
               {% endif %}
             </p>
             <div class="wait_details wait_box">
               <p>Reported</p>
-              <p class="wait_value">{{ business['timestamp'] }}</p>
+              <p class="wait_value">{{ restaurant['timestamp'] }}</p>
             </div>
             <div class="wait_details wait_box">
               <p>Party Size</p>
-              <p class="wait_value">{{ business['party_size'] }}</p>
+              <p class="wait_value">{{ restaurant['party_size'] }}</p>
             </div>
             <div class="wait_details">
               <p>Parties Ahead</p>
-              <p class="wait_value">{{ business['parties_ahead'] }}</p>
+              <p class="wait_value">{{ restaurant['parties_ahead'] }}</p>
             </div>
           </div> <!-- wait info -->
 
           <div id="yelp_info">
-            <img src="{{ business['rating_img_url'] }}">
-            <p>{{ business['review_count'] }} reviews</p>
-            <p><a href="{{ business['url'] }}" target="_blank"><img src="/static/img/yelp_review_btn_light.png"></a></p>
+            <img src="{{ restaurant['rating_img_url'] }}">
+            <p>{{ restaurant['review_count'] }} reviews</p>
+            <p><a href="{{ restaurant['url'] }}" target="_blank"><img src="/static/img/yelp_review_btn_light.png"></a></p>
           </div> <!-- yelp info -->
           <br>
         </div> <!-- individual result -->

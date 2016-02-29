@@ -1,74 +1,63 @@
 from model import WaitTime, connect_to_db, db
 from server import app
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 def load_wait_times():
-    """Load some wait times into database."""
+    """Load sample wait times into database."""
 
     wait1 = WaitTime(yelp_id="sanraku-san-francisco-2",
                      party_size=3,
-                     quoted_minutes=120,
                      parties_ahead=10,
-                     timestamp=datetime(2016, 2, 25, 21, 55),
-                     estimated_time=datetime(2016, 2, 25, 23, 55))
+                     quoted_minutes=120,
+                     timestamp=datetime(2016, 2, 25, 21, 55))
 
     wait2 = WaitTime(yelp_id="sanraku-san-francisco-2",
                      party_size=2,
-                     quoted_minutes=90,
                      parties_ahead=6,
-                     timestamp=datetime(2016, 2, 25, 21, 55),
-                     estimated_time=datetime(2016, 2, 25, 23, 25))
+                     quoted_minutes=90,
+                     timestamp=datetime(2016, 2, 25, 21, 55))
 
     wait3 = WaitTime(yelp_id="sanraku-san-francisco-4",
                      party_size=6,
-                     quoted_minutes=60,
                      parties_ahead=5,
-                     timestamp=datetime(2016, 2, 25, 20, 00),
-                     estimated_time=datetime(2016, 2, 25, 21, 00))
+                     quoted_minutes=60,
+                     timestamp=datetime(2016, 2, 25, 20, 00))
 
     wait4 = WaitTime(yelp_id="katana-ya-san-francisco",
                      party_size=3,
-                     quoted_minutes=20,
                      parties_ahead=4,
-                     timestamp=datetime(2016, 2, 25, 19, 40),
-                     estimated_time=datetime(2016, 2, 25, 20, 0))
+                     quoted_minutes=20,
+                     timestamp=datetime(2016, 2, 25, 19, 40))
 
     wait5 = WaitTime(yelp_id="katana-ya-san-francisco",
                      party_size=4,
-                     quoted_minutes=30,
                      parties_ahead=5,
-                     timestamp=datetime(2016, 2, 25, 22, 1),
-                     estimated_time=datetime(2016, 2, 25, 22, 31))
+                     quoted_minutes=30,
+                     timestamp=datetime(2016, 2, 25, 22, 1))
 
     wait6 = WaitTime(yelp_id="nara-sushi-san-francisco",
                      party_size=2,
-                     quoted_minutes=90,
                      parties_ahead=6,
-                     timestamp=datetime.utcnow(),
-                     estimated_time=(datetime.utcnow() + timedelta(minutes=90)))
+                     quoted_minutes=90)
 
     wait7 = WaitTime(yelp_id="ryokos-san-francisco",
                      party_size=2,
-                     quoted_minutes=45,
                      parties_ahead=4,
-                     timestamp=datetime(2016, 2, 26, 2, 1),
-                     estimated_time=datetime(2016, 2, 26, 2, 46))
+                     quoted_minutes=45,
+                     timestamp=datetime(2016, 2, 26, 2, 1))
 
     wait8 = WaitTime(yelp_id="ebisu-san-francisco",
                      party_size=2,
-                     quoted_minutes=45,
                      parties_ahead=4,
-                     timestamp=datetime(2016, 2, 25, 20, 30),
-                     estimated_time=datetime(2016, 2, 25, 21, 15),
-                     still_waiting=False)
+                     quoted_minutes=45,
+                     timestamp=datetime(2016, 2, 25, 20, 30))
 
     wait9 = WaitTime(yelp_id="akikos-restaurant-san-francisco",
                      party_size=2,
-                     quoted_minutes=75,
                      parties_ahead=4,
-                     timestamp=datetime(2016, 2, 25, 21, 15),
-                     estimated_time=datetime(2016, 2, 25, 22, 30))
+                     quoted_minutes=75,
+                     timestamp=datetime(2016, 2, 25, 21, 15))
 
     db.session.add_all([wait1, wait2, wait3, wait4,
                         wait5, wait6, wait7, wait8,
