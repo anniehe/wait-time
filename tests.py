@@ -155,7 +155,7 @@ class TwilioUnitTestCase(TestCase):
         print "send reminder sms for invalid number tested"
 
 
-class SortedResultUnitTests(TestCase):
+class SortedResultUnitTestCase(TestCase):
     """Unit tests on sorted result."""
 
     def test_sorted_result_by_wait_time(self):
@@ -194,6 +194,71 @@ class SortedResultUnitTests(TestCase):
         self.assertEqual(result_sorted[0]["timestamp_value"], datetime(2016, 3, 1, 20, 5, 55, 643065))
         print "sorted result by recently reported tested"
 
+
+class FilteredResultUnitTestCase(TestCase):
+    """Unit tests on filtered result."""
+
+    def test_filtered_result_by_open_now(self):
+        result = [{"id": "ryokos-san-francisco", "open_now": "Closed"},
+                  {"id": "saru-sushi-bar-san-francisco", "open_now": "Open now"}]
+        result_filtered = filtered_result(result, ["open_now"])
+
+        self.assertIn({"id": "saru-sushi-bar-san-francisco", "open_now": "Open now"}, result_filtered)
+        self.assertNotIn({"id": "ryokos-san-francisco", "open_now": "Closed"}, result_filtered)
+        print "filtered result by open now tested"
+
+    def test_filtered_result_by_15_min_wait(self):
+        result = [{"id": "sanraku-san-francisco-2", "quoted_wait_time": 10},
+                  {"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 15},
+                  {"id": "ryokos-san-francisco", "quoted_wait_time": 20}]
+        result_filtered = filtered_result(result, ["15_min_wait"])
+
+        self.assertIn({"id": "sanraku-san-francisco-2", "quoted_wait_time": 10}, result_filtered)
+        self.assertIn({"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 15}, result_filtered)
+        self.assertNotIn({"id": "ryokos-san-francisco", "quoted_wait_time": 20}, result_filtered)
+        print "filtered result by <=15 min wait tested"
+
+    def test_filtered_result_by_30_min_wait(self):
+        result = [{"id": "sanraku-san-francisco-2", "quoted_wait_time": 10},
+                  {"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 30},
+                  {"id": "ryokos-san-francisco", "quoted_wait_time": 45}]
+        result_filtered = filtered_result(result, ["30_min_wait"])
+
+        self.assertIn({"id": "sanraku-san-francisco-2", "quoted_wait_time": 10}, result_filtered)
+        self.assertIn({"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 30}, result_filtered)
+        self.assertNotIn({"id": "ryokos-san-francisco", "quoted_wait_time": 45}, result_filtered)
+        print "filtered result by <=30 min wait tested"
+
+    def test_filtered_result_by_45_min_wait(self):
+        result = [{"id": "sanraku-san-francisco-2", "quoted_wait_time": 10},
+                  {"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 45},
+                  {"id": "ryokos-san-francisco", "quoted_wait_time": 60}]
+        result_filtered = filtered_result(result, ["45_min_wait"])
+
+        self.assertIn({"id": "sanraku-san-francisco-2", "quoted_wait_time": 10}, result_filtered)
+        self.assertIn({"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 45}, result_filtered)
+        self.assertNotIn({"id": "ryokos-san-francisco", "quoted_wait_time": 60}, result_filtered)
+        print "filtered result by <=45 min wait tested"
+
+    def test_filtered_result_by_60_min_wait(self):
+        result = [{"id": "sanraku-san-francisco-2", "quoted_wait_time": 10},
+                  {"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 60},
+                  {"id": "ryokos-san-francisco", "quoted_wait_time": 120}]
+        result_filtered = filtered_result(result, ["60_min_wait"])
+
+        self.assertIn({"id": "sanraku-san-francisco-2", "quoted_wait_time": 10}, result_filtered)
+        self.assertIn({"id": "saru-sushi-bar-san-francisco", "quoted_wait_time": 60}, result_filtered)
+        self.assertNotIn({"id": "ryokos-san-francisco", "quoted_wait_time": 120}, result_filtered)
+        print "filtered result by <=60 min wait tested"
+
+
+# class AddOpenStatusUnitTests(TestCase):
+#     """Unit tests on add open status."""
+
+    # def test_add_open_status_true(self):
+    #     restaurant = {"id": "ryokos-san-francisco",
+    #                   "open_now": "Open now",
+    #                   "timestamp": "18 hours ago"}
 
 # class MockFlaskTests(TestCase):
 #     """Mock flask tests for Google and Yelp."""
