@@ -45,7 +45,7 @@ def display_search_results():
     search_results = yelp.search_query(term=search_term,
                                        location=location_term,
                                        category_filter="food,restaurants",
-                                       limit=2)
+                                       limit=10)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
@@ -75,13 +75,6 @@ def display_search_results():
     # Handle filtering
     selected_filters = request.args.getlist("filter_by")
     result = filtered_result(result, selected_filters)
-
-    print "RESULT\n", result
-    print "\n"
-    print "RYOKO\n", result[0]
-    print "\n"
-    print "SARA SUSHI\n", result[1]
-    print "\n"
 
     # Add result to result_dict, which will be converted to a JSON through Jinja.
     result_dict = {'result': result}
