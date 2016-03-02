@@ -26,7 +26,7 @@ body {
     margin: 5px;
 }
 
-#open_status {
+.open_status {
     text-align: right;
 }
 
