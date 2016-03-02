@@ -7,6 +7,7 @@ import process_results
 from unittest import TestCase
 from twilio_api import convert_to_e164, send_thank_you_sms, send_reminder_sms
 from datetime import datetime
+from model import connect_to_db
 
 # To test:
 # python tests.py
@@ -324,6 +325,24 @@ class AddOpenStatusNoneTestCase(TestCase):
         print"add open status ('Open now unknown') for none value tested"
 
 
+class AddWaitInfoTestCase(TestCase):
+    """Unit test for add wait info with test database."""
+
+    def setUp(self):
+        """Do before every test."""
+
+        # Get the Flask test client
+        self.client = app.test_client()
+
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+
+        # Connect to test database
+        connect_to_db(app, "postgres:///testdb")
+
+    # def test_add_wait_info(self):
+
+
 # class MockFlaskTests(TestCase):
 #     """Mock flask tests for Yelp."""
 
@@ -401,9 +420,6 @@ class AddOpenStatusNoneTestCase(TestCase):
 
 #         server.yelp.search_query = self.old_get_yelp_search_results
 
-#     def test_add_wait_info_with_mock(restaurant):
-#         pass
-
 
 class IntegerationTestCase(TestCase):
     """Integrations on Flask server."""
@@ -415,11 +431,14 @@ class IntegerationTestCase(TestCase):
     def test_homepage(self):
         result = self.client.get("/")
         self.assertEqual(result.status_code, 200)
+        self.assertIn('text/html', result.headers['Content-Type'])
         print "homepage tested"
 
     def test_report(self):
         result = self.client.get("/report")
         self.assertEqual(result.status_code, 200)
+        self.assertIn('text/html', result.headers['Content-Type'])
+        self.assertIn('<h2>Report Your Wait Time</h2>', result.data)
         print "display report form tested"
 
 
