@@ -205,6 +205,7 @@
     $(".open_status").each(function () {
       if ($(this).text() == "Open now") {
         $(this).css("color", "green");
+        $(this).css("font-weight", "bold");
       }
     });
 
@@ -212,16 +213,34 @@
     $(".open_status").each(function () {
       if ($(this).text() == "Closed") {
         $(this).css("color", "red");
+        $(this).css("font-weight", "bold");
       }
     });
 
     // If open status is "Open now unknown", change color to grey
     $(".open_status").each(function () {
       if ($(this).text() == "Open now unknown") {
-        $(this).css("color", "grey");
+        $(this).css("color", "gray");
+        $(this).css("font-weight", "bold");
       }
     });
   </script>
 
+  <script>
+    // Change border color when hovering over a result
+    var key, yelpId;
+
+    for (key in resultObject['result']) {
+      yelpId = resultObject['result'][key]['id'];
+
+      $("#" + yelpId).hover(
+        function() {
+          $( this ).css("border", "2px solid #00CCFF");
+        }, function() {
+          $( this ).css("border", "2px solid #F0F0F0");
+        }
+      );
+    }
+  </script>
 
 {% endblock %}
