@@ -19,69 +19,6 @@ from model import connect_to_db, WaitTime, db
 # coverage report -m
 
 
-# mock_full_result = [
-#     {
-#         "rating": 4.0,
-#         "rating_img_url": "https://s3-media4.fl.yelpcdn.com/assets/2/www/img/c2f3dd9799a5/ico/stars/v1/stars_4.png",
-#         "review_count": 1983,
-#         "name": "Ryoko's",
-#         "rating_img_url_small": "https://s3-media4.fl.yelpcdn.com/assets/2/www/img/f62a5be2f902/ico/stars/v1/stars_small_4.png",
-#         "url": "http://www.yelp.com/biz/ryokos-san-francisco?utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=6XuCRI2pZ5pIvcWc9SI3Yg",
-#         "image_url": "https://s3-media4.fl.yelpcdn.com/bphoto/El1KekyVFSqrtKLAyjcfNA/ms.jpg",
-#         "display_phone": "+1-415-775-1028",
-#         "id": "ryokos-san-francisco",
-#         "location": {
-#             "city": "San Francisco",
-#             "postal_code": "94102",
-#             "address": [
-#                 "619 Taylor St"
-#             ],
-#             "coordinate": {
-#                 "latitude": 37.788008004427,
-#                 "longitude": -122.411782890558
-#             },
-#             "state_code": "CA"
-#         },
-#         "open_now": "Closed",
-#         "timestamp_value": datetime(2016, 3, 1, 1, 27, 53, 200319),
-#         "timestamp": "18 hours ago",
-#         "party_size": "N/A",
-#         "parties_ahead": "N/A",
-#         "quoted_wait_time": 1,
-#     },
-#     {
-#         "rating": 4.5,
-#         "rating_img_url": "https://s3-media2.fl.yelpcdn.com/assets/2/www/img/99493c12711e/ico/stars/v1/stars_4_half.png",
-#         "review_count": 547,
-#         "name": "Saru Sushi Bar",
-#         "rating_img_url_small": "https://s3-media2.fl.yelpcdn.com/assets/2/www/img/a5221e66bc70/ico/stars/v1/stars_small_4_half.png",
-#         "url": "http://www.yelp.com/biz/saru-sushi-bar-san-francisco?utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=6XuCRI2pZ5pIvcWc9SI3Yg",
-#         "image_url": "https://s3-media2.fl.yelpcdn.com/bphoto/5-ugy01zjSvudVsfdhmCsA/ms.jpg",
-#         "display_phone": "+1-415-400-4510",
-#         "id": "saru-sushi-bar-san-francisco",
-#         "location": {
-#             "city": "San Francisco",
-#             "postal_code": "94114",
-#             "country_code": "US",
-#             "address": [
-#                 "3856 24th St"
-#             ],
-#             "coordinate": {
-#                 "latitude": 37.751706,
-#                 "longitude": -122.4288283
-#             },
-#             "state_code": "CA"
-#         },
-#         "open_now": "Open now",
-#         "timestamp_value": datetime(2016, 3, 1, 20, 5, 55, 643065),
-#         "timestamp": "2 minutes ago",
-#         "party_size": "N/A",
-#         "parties_ahead": "N/A",
-#         "quoted_wait_time": 15,
-#     }
-# ]
-
-
 def load_tests(loader, tests, ignore):
     """Also run doctests and file-based doctests."""
 

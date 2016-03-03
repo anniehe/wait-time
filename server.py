@@ -9,7 +9,6 @@ from yelp_api import yelp
 from google_api import BROWSER_KEY
 from twilio_api import send_thank_you_sms, send_reminder_sms, convert_to_e164
 
-from datetime import datetime
 import threading
 
 
@@ -40,33 +39,19 @@ def display_search_results():
     if not location_term:
         location_term = "San Francisco"
 
-    before_yelp = datetime.now()
     # Yelp API call with user input values
     search_results = yelp.search_query(term=search_term,
                                        location=location_term,
                                        category_filter="food,restaurants",
                                        limit=10)
-    after_yelp = datetime.now()
-    print after_yelp - before_yelp, "YELP"
 
     # result is the list of restaurant dictionaries
     result = search_results['businesses']
 
     # For each restaurant, add its open status and wait time info to their dictionary
     for restaurant in result:
-
-        before_google = datetime.now()
         add_open_status(restaurant)
-        after_google = datetime.now()
-        print after_google - before_google, "GOOGLE"
-
-        before_wait = datetime.now()
         add_wait_info(restaurant)
-        after_wait = datetime.now()
-        print after_wait - before_wait, "WAIT"
-
-    after_loop = datetime.now()
-    print after_loop - before_yelp, "TOTAL TIME"
 
     # Handle sorting
     sort_value = request.args.get("sort_by")

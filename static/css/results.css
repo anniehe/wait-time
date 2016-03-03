@@ -67,7 +67,12 @@ body {
     padding-right:10px;
     padding-bottom: 10px;
     border: 2px solid #F0F0F0;
+    border-radius: 5px;
     margin-top: 10px;
+}
+
+h2 {
+    text-align: center;
 }
 
 .center {
@@ -83,4 +88,12 @@ body {
 .relative {
     position: absolute;
     margin-top: 200px;
+}
+
+#search-form {
+    vertical-align: top;
+}
+
+.btn-group-vertical {
+    vertical-align: top;
 }
