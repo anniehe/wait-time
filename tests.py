@@ -340,7 +340,11 @@ class AddWaitInfoTestCase(TestCase):
         # Connect to test database
         connect_to_db(app, "postgres:///testdb")
 
-    # def test_add_wait_info(self):
+    def test_add_wait_info_true(self):
+        restaurant_sample = {"id": "ryokos-san-francisco", "name": "Ryoko's"}
+        add_wait_info(restaurant_sample)
+        self.assertEqual(restaurant_sample["timestamp_value"], datetime(2016, 3, 1, 1, 27, 53, 200319))
+        print "add wait info for available info tested"
 
 
 # class MockFlaskTests(TestCase):

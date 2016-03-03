@@ -7,11 +7,7 @@ import arrow
 
 
 def add_open_status(restaurant):
-    """Add restaurant's open status at the current time to the its dictionary.
-
-        >>> mock_restaurant = { "rating": 4.0, "rating_img_url": "https://s3-media4.fl.yelpcdn.com/assets/2/www/img/c2f3dd9799a5/ico/stars/v1/stars_4.png", "review_count": 1983, "name": "Ryoko's", "rating_img_url_small": "https://s3-media4.fl.yelpcdn.com/assets/2/www/img/f62a5be2f902/ico/stars/v1/stars_small_4.png", "url": "http://www.yelp.com/biz/ryokos-san-francisco?utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=6XuCRI2pZ5pIvcWc9SI3Yg", "image_url": "https://s3-media4.fl.yelpcdn.com/bphoto/El1KekyVFSqrtKLAyjcfNA/ms.jpg", "display_phone": "+1-415-775-1028", "id": "ryokos-san-francisco", "location": { "city": "San Francisco", "postal_code": "94102", "address": [ "619 Taylor St" ], "coordinate": { "latitude": 37.788008004427, "longitude": -122.411782890558 }, "state_code": "CA" }}
-        >>> add_open_status(mock_restaurant)
-    """
+    """Add restaurant's open status at the current time to the its dictionary."""
 
     # Find matching Google Places open status info for the Yelp restaurant result
     name = restaurant['name']

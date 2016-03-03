@@ -45,7 +45,7 @@ def display_search_results():
     search_results = yelp.search_query(term=search_term,
                                        location=location_term,
                                        category_filter="food,restaurants",
-                                       limit=10)
+                                       limit=2)
     after_yelp = datetime.now()
     print after_yelp - before_yelp, "YELP"
 
