@@ -7,7 +7,7 @@ import process_results
 from unittest import TestCase
 from twilio_api import convert_to_e164, send_thank_you_sms, send_reminder_sms
 from datetime import datetime
-from model import connect_to_db
+from model import connect_to_db, WaitTime, db
 
 # To test:
 # python tests.py
@@ -325,6 +325,10 @@ class AddOpenStatusNoneTestCase(TestCase):
         print"add open status ('Open now unknown') for none value tested"
 
 
+class DatabaseTestCase(TestCase):
+    """Test adding record with nullable fields"""
+
+
 class AddWaitInfoTestCase(TestCase):
     """Unit test for add wait info with test database."""
 
@@ -338,14 +342,57 @@ class AddWaitInfoTestCase(TestCase):
         app.config['TESTING'] = True
 
         # Connect to test database
-        connect_to_db(app, "postgres:///testdb")
+        connect_to_db(app, "postgresql:///testdb")
+        db.create_all()
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
 
     def test_add_wait_info_true(self):
-        restaurant_sample = {"id": "ryokos-san-francisco", "name": "Ryoko's"}
-        add_wait_info(restaurant_sample)
-        self.assertEqual(restaurant_sample["timestamp_value"], datetime(2016, 3, 1, 1, 27, 53, 200319))
-        print "add wait info for available info tested"
+        new_wait = WaitTime(yelp_id="ryokos-san-francisco",
+                            party_size=3,
+                            parties_ahead=10,
+                            quoted_minutes=120,
+                            timestamp=datetime(2016, 3, 2, 1, 27, 53, 200319))
+        db.session.add(new_wait)
+        db.session.commit()
 
+        restaurant_mock = {"id": "ryokos-san-francisco", "name": "Ryoko's"}
+        add_wait_info(restaurant_mock)
+        self.assertEqual(restaurant_mock["quoted_wait_time"], 120)
+        self.assertEqual(restaurant_mock["timestamp_value"], datetime(2016, 3, 2, 1, 27, 53, 200319))
+        print "add wait info for matching restaurant tested"
+
+    def test_add_wait_info_false(self):
+        restaurant_mock = {"id": "little-star-pizza-san-francisco", "name": "Little Star Pizza"}
+        add_wait_info(restaurant_mock)
+        self.assertEqual(restaurant_mock["quoted_wait_time"], "Not available")
+        self.assertEqual(restaurant_mock["timestamp_value"], datetime(2000, 2, 2))
+        print "add wait info for no match tested"
+
+    def test_add_wait_info_multiple(self):
+        wait1 = WaitTime(yelp_id="ryokos-san-francisco",
+                         party_size=3,
+                         parties_ahead=10,
+                         quoted_minutes=120,
+                         timestamp=datetime(2016, 3, 2, 1, 27, 53, 200319))
+
+        wait2 = WaitTime(yelp_id="ryokos-san-francisco",
+                         party_size=4,
+                         parties_ahead=2,
+                         quoted_minutes=60,
+                         timestamp=datetime(2016, 3, 1, 1, 26, 00, 200319))
+        db.session.add_all([wait1, wait2])
+        db.session.commit()
+
+        restaurant_mock = {"id": "ryokos-san-francisco", "name": "Ryoko's"}
+        add_wait_info(restaurant_mock)
+        self.assertEqual(restaurant_mock["quoted_wait_time"], 120)
+        self.assertEqual(restaurant_mock["timestamp_value"], datetime(2016, 3, 2, 1, 27, 53, 200319))
+        print "add wait info with multiple restaurants tested"
 
 # class MockFlaskTests(TestCase):
 #     """Mock flask tests for Yelp."""
@@ -430,7 +477,21 @@ class IntegerationTestCase(TestCase):
 
     def setUp(self):
         self.client = app.test_client()
+
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
+
+        # Connect to test database
+        connect_to_db(app, "postgresql:///testdb")
+        db.create_all()
+
         print "setUp ran for testing flask server."
+
+    def tearDown(self):
+        """Do at end of every test."""
+
+        db.session.close()
+        db.drop_all()
 
     def test_homepage(self):
         result = self.client.get("/")
@@ -444,6 +505,17 @@ class IntegerationTestCase(TestCase):
         self.assertIn('text/html', result.headers['Content-Type'])
         self.assertIn('<h2>Report Your Wait Time</h2>', result.data)
         print "display report form tested"
+
+    def test_process_report(self):
+        result = self.client.post("/process_report",
+                                  data={"restaurant_name": "Sanraku",
+                                        "location": "704 Sutter St, San Francisco, CA 94109, United States",
+                                        "quoted_hr": 1,
+                                        "quoted_min": 30},
+                                  follow_redirects=True)
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('Thanks for reporting your wait time!', result.data)
+        print "process report tested"
 
 
 if __name__ == '__main__':

@@ -31,11 +31,11 @@ class WaitTime(db.Model):
 ##############################################################################
 # Helper functions
 
-def connect_to_db(app):
+def connect_to_db(app, db_uri='postgresql:///wait'):
     """Connect database to Flask app."""
 
     # Configure to use PostgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///wait'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLAlCHEMY_ECHO'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
