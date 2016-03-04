@@ -13,7 +13,7 @@
 
   <div class="container">
     <div class="row">
-      <h2>Find wait times</h2>
+      <h2 id="search-header">Find wait times</h2>
       <div class="col-xs-12 center">
 
         <form id="search-form" class="form-inline" action="/search" method="GET">
@@ -104,7 +104,7 @@
       {% for restaurant in result %}
         <div id="{{ restaurant['id'] }}" class="result">
           <p class="open_status">{{ restaurant['open_now'] }}</p>
-          <div id="header">
+          <div id="result-header">
             <h3 id="restaurant_name">{{ restaurant['name'] }}</h3>
 
             <p id="address">{{ restaurant['location']['address'][0] }}<br>
