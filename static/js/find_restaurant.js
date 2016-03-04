@@ -8,10 +8,6 @@ function initAutocomplete() {
     // When the user selects the place from the dropdown, get the place details.
     autocomplete.addListener('place_changed', function() {
         var place = autocomplete.getPlace();
-        console.log(place);
-        console.log(place.formatted_address);
-        console.log(place.name);
-
         var address = place.formatted_address;
         var name = place.name;
 

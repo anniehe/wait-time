@@ -61,7 +61,7 @@ def display_search_results():
     selected_filters = request.args.getlist("filter_by")
     result = filtered_result(result, selected_filters)
 
-    # Add result to result_dict, which will be converted to a JSON through Jinja.
+    # Add result to result_dict, which will be converted to a JSON through Jinja
     result_dict = {'result': result}
 
     return render_template("results.html",
@@ -87,8 +87,7 @@ def process_wait_time_form():
     restaurant_name = request.form.get("restaurant_name")
     location = request.form.get("location")
 
-    # Yelp API call with restaurant name and location values
-    # parsed from the selected restaurant to get the corresponding yelp id
+    # Yelp API call to get the corresponding yelp id for the restaurant
     search_results = yelp.search_query(term=restaurant_name,
                                        location=location,
                                        category_filter="food,restaurants",
@@ -112,11 +111,11 @@ def process_wait_time_form():
 
     # Covert quoted wait time into string value for customized sms
     if quoted_hr and not quoted_min:
-        quoted_time = str(quoted_hr) + " hr"
+        quoted_time = "%d hr" % (quoted_hr)
     elif quoted_hr and quoted_min:
-        quoted_time = str(quoted_hr) + " hr " + str(quoted_min) + " min"
+        quoted_time = "%d hr %d min" % (quoted_hr, quoted_min)
     elif quoted_min and not quoted_hr:
-        quoted_time = str(quoted_min) + " min"
+        quoted_time = "%d min" % (quoted_min)
 
     if request.form.get("phone_number"):
         raw_phone_number = str(request.form.get("phone_number"))

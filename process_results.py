@@ -7,9 +7,8 @@ import arrow
 
 
 def add_open_status(restaurant):
-    """Add restaurant's open status at the current time to the its dictionary."""
+    """Add a restaurant's open status at the current time to the its dictionary."""
 
-    # Find matching Google Places open status info for the Yelp restaurant result
     name = restaurant['name']
     address = restaurant['location']['address'][0]
     city = restaurant['location']['city']
@@ -19,7 +18,9 @@ def add_open_status(restaurant):
     keyword = "%s %s %s" % (name, address, city)
     location = "%f,%f" % (location_lat, location_lng)
 
+    # Google Places API call to return the current open status for the restaurant
     open_now = is_open_now(keyword, location)
+
     # open_now is True, False, or None
     if open_now:
         open_now = "Open now"
@@ -33,7 +34,7 @@ def add_open_status(restaurant):
 
 
 def add_wait_info(restaurant):
-    """Add restaurant's wait time information from database to its dictionary."""
+    """Add a restaurant's wait time information from database to its dictionary."""
 
     yelp_id = restaurant['id']
 
@@ -101,40 +102,19 @@ def filtered_result(result, selected_filters):
                 new_result.append(restaurant)
         result = new_result
 
-    # Filter by <=15 min wait
-    if "15_min_wait" in selected_filters:
-        new_result = []
-        for restaurant in result:
-            if (restaurant['quoted_wait_time'] != "Not available" and
-                    restaurant['quoted_wait_time'] <= 15):
-                new_result.append(restaurant)
-        result = new_result
-
-    # Filter by <=30 min wait
-    if "30_min_wait" in selected_filters:
-        new_result = []
-        for restaurant in result:
-            if (restaurant['quoted_wait_time'] != "Not available" and
-                    restaurant['quoted_wait_time'] <= 30):
-                new_result.append(restaurant)
-        result = new_result
-
-    # Filter by <=45 min wait
-    if "45_min_wait" in selected_filters:
-        new_result = []
-        for restaurant in result:
-            if (restaurant['quoted_wait_time'] != "Not available" and
-                    restaurant['quoted_wait_time'] <= 45):
-                new_result.append(restaurant)
-        result = new_result
-
-    # Filter by <=60 min wait
-    if "60_min_wait" in selected_filters:
-        new_result = []
-        for restaurant in result:
-            if (restaurant['quoted_wait_time'] != "Not available" and
-                    restaurant['quoted_wait_time'] <= 60):
-                new_result.append(restaurant)
-        result = new_result
+    # Filter by <= 15, 30, 45, or 60 min wait
+    for filter_name, wait_time in (
+        ("15_min_wait", 15),
+        ("30_min_wait", 30),
+        ("45_min_wait", 45),
+        ("60_min_wait", 60),
+    ):
+        if filter_name in selected_filters:
+            new_result = []
+            for restaurant in result:
+                if (restaurant['quoted_wait_time'] != "Not available" and
+                        restaurant['quoted_wait_time'] <= wait_time):
+                    new_result.append(restaurant)
+            result = new_result
 
     return result
