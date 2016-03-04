@@ -4,11 +4,6 @@
   <title>Report Wait Time</title>
   <link rel="stylesheet" href="/static/css/report.css">
 
-  <script type="text/javascript" 
-    src="https://maps.googleapis.com/maps/api/js?key={{ key }}&libraries=places">
-  </script>
-  <script src="/static/js/find_restaurant.js"></script>
-
 {% endblock %}
 
 
@@ -103,23 +98,9 @@
     </div> <!-- row -->
   </div> <!-- container -->
 
-  <script>
-    function validatePhoneNumber(phoneNumberInput) {
-      var phoneNumberFormat = /^[\+]?[1]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/;
-      // Enable report button if phone number is in valid format.
-      if (phoneNumberInput.match(phoneNumberFormat)) {
-        $("#report").prop("disabled", false);
-        $("#report").focus();
-      // Enable report button if no phone number inputted.
-      } else if (phoneNumberInput === "") {
-        $("#report").prop("disabled", false);
-        $("#report").focus();
-      // Report button remains disabled if invalid phone number.
-      } else {
-        alert("Phone number is invalid.");
-        $("#phone_number").focus();
-      }
-    }
+  <script type="text/javascript" 
+    src="https://maps.googleapis.com/maps/api/js?key={{ key }}&libraries=places">
   </script>
+  <script src="/static/js/wait_time_form.js"></script>
 
 {% endblock %}

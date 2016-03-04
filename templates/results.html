@@ -3,25 +3,6 @@
 
   <title>Results</title>
   <link rel="stylesheet" href="/static/css/results.css">
-  <script>
-    var resultObject = {{ result_dict|tojson|safe }};
-  </script>
-  <script src="/static/js/map.js"></script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap">
-  </script>
-
-  <style>
-    #curious_pusheen {
-      position: fixed;
-      left: 0px;
-      top: 0px;
-      width: 100%;
-      height: 100%;
-      z-index: 9999;
-      background: url("/static/img/pusheen_food.gif") 50% 50% no-repeat rgb(253,241,229);
-    }
-  </style>
 
 {% endblock %}
 
@@ -180,85 +161,12 @@
 
 
   <script>
-    // Display hungry pusheen gif once submit button is clicked
-    function showPusheen(evt) {
-      evt.preventDefault();
-      $("#hungry_pusheen").show();
-      $(this).unbind('submit').submit();
-    }
-    $("#search-form").submit(showPusheen);
-
-    // Display curious pusheen gif while results page loads
-    $(window).load(function() {
-      $("#curious_pusheen").fadeOut("slow");
-    })
+    var resultObject = {{ result_dict|tojson|safe }};
   </script>
-  
-  <script>
-    // If open status is "Open now", change color to green
-    $(".open_status").each(function () {
-      if ($(this).text() == "Open now") {
-        $(this).css("color", "green");
-        $(this).css("font-weight", "bold");
-      }
-    });
-
-    // If open status is "Closed", change color to red
-    $(".open_status").each(function () {
-      if ($(this).text() == "Closed") {
-        $(this).css("color", "red");
-        $(this).css("font-weight", "bold");
-      }
-    });
-
-    // If open status is "Open now unknown", change color to grey
-    $(".open_status").each(function () {
-      if ($(this).text() == "Open now unknown") {
-        $(this).css("color", "gray");
-        $(this).css("font-weight", "bold");
-      }
-    });
+  <script src="/static/js/map.js"></script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap">
   </script>
-
-  <script>
-    // Change border color when hovering over a result
-    var key, yelpId;
-
-    for (key in resultObject['result']) {
-      yelpId = resultObject['result'][key]['id'];
-
-      $("#" + yelpId).hover(
-        function() {
-          $( this ).css("border", "2px solid #00CCFF");
-        }, function() {
-          $( this ).css("border", "2px solid #F0F0F0");
-        }
-      );
-    }
-  </script>
-
-  <script>
-    // Toggle sorting selections
-    $(".show_radio").hide();
-
-    function toggleRadioBtns(evt) {
-      $(".show_radio").toggle();
-    }
-      
-    $("#sort_by_btn").click(toggleRadioBtns);
-
-  </script>
-
-  <script>
-    // Toggle filtering selections
-    $(".show_checkbox").hide();
-
-    function toggleCheckBoxBtns(evt) {
-      $(".show_checkbox").toggle();
-    }
-      
-    $("#filter_by_btn").click(toggleCheckBoxBtns);
-
-  </script>
+  <script src="/static/js/results.js"></script>
 
 {% endblock %}

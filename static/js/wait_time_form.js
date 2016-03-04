@@ -18,3 +18,21 @@ function initAutocomplete() {
 }
 
 google.maps.event.addDomListener(window, 'load', initAutocomplete);
+
+
+function validatePhoneNumber(phoneNumberInput) {
+  var phoneNumberFormat = /^[\+]?[1]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$/;
+  // Enable report button if phone number is in valid format.
+  if (phoneNumberInput.match(phoneNumberFormat)) {
+    $("#report").prop("disabled", false);
+    $("#report").focus();
+  // Enable report button if no phone number inputted.
+  } else if (phoneNumberInput === "") {
+    $("#report").prop("disabled", false);
+    $("#report").focus();
+  // Report button remains disabled if invalid phone number.
+  } else {
+    alert("Phone number is invalid.");
+    $("#phone_number").focus();
+  }
+}

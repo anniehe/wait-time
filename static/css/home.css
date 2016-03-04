@@ -13,3 +13,8 @@ html, body {
 #header {
     padding-bottom: 20px;
 }
+
+#flash {
+  margin-top: 75px;
+  text-align: center;
+}
