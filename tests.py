@@ -308,7 +308,7 @@ class AddOpenStatusNoneTestCase(TestCase):
 
 
 class AddWaitInfoTestCase(TestCase):
-    """Unit test for add wait info with test database."""
+    """Unit test for adding wait info with test database."""
 
     def setUp(self):
         """Do before every test."""
@@ -395,10 +395,6 @@ class AddWaitInfoTestCase(TestCase):
         print "add wait info with null values for matching restaurant tested"
 
 
-class DatabaseTestCase(TestCase):
-    """Test adding record with nullable fields"""
-
-
 class IntegerationTestCase(TestCase):
     """Integration tests on Flask server."""
 
@@ -446,6 +442,8 @@ class IntegerationTestCase(TestCase):
         result = self.client.post("/process_report",
                                   data={"restaurant_name": "Sanraku",
                                         "location": "704 Sutter St, San Francisco, CA 94109, United States",
+                                        "party_size": 2,
+                                        "parties_ahead": 5,
                                         "quoted_hr": 1,
                                         "quoted_min": 30},
                                   follow_redirects=True)
@@ -453,83 +451,68 @@ class IntegerationTestCase(TestCase):
         self.assertIn('Thanks for reporting your wait time!', result.data)
         print "process report tested"
 
+    def test_process_report_with_null(self):
+        """Tests if wait time form will process the report properly with null values."""
 
-# class MockFlaskTests(TestCase):
-#     """Mock flask tests for Yelp."""
+        result = self.client.post("/process_report",
+                                  data={"restaurant_name": "Sanraku",
+                                        "location": "704 Sutter St, San Francisco, CA 94109, United States",
+                                        "quoted_hr": 0,
+                                        "quoted_min": 30},
+                                  follow_redirects=True)
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('Thanks for reporting your wait time!', result.data)
+        print "process report tested with null"
 
-#     def setUp(self):
-#         """Do before every test."""
 
-#         # Get the Flask test client
-#         self.client = app.test_client()
+class MockFlaskTests(TestCase):
+    """Flask tests with mocks."""
 
-#         # Show Flask errors that happen during tests
-#         app.config['TESTING'] = True
+    def setUp(self):
+        """Do before every test."""
 
-#         # Make mocks
+        # Get the Flask test client
+        self.client = app.test_client()
 
-#         def _mock_get_yelp_search_results(term, location, category_filter, limit):
-#             search_results = {
-#                 "businesses": [
-#                     {
-#                         "rating": 4.0,
-#                         "rating_img_url": "https://s3-media4.fl.yelpcdn.com/assets/2/www/img/c2f3dd9799a5/ico/stars/v1/stars_4.png",
-#                         "review_count": 1983,
-#                         "name": "Ryoko's",
-#                         "rating_img_url_small": "https://s3-media4.fl.yelpcdn.com/assets/2/www/img/f62a5be2f902/ico/stars/v1/stars_small_4.png",
-#                         "url": "http://www.yelp.com/biz/ryokos-san-francisco?utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=6XuCRI2pZ5pIvcWc9SI3Yg",
-#                         "image_url": "https://s3-media4.fl.yelpcdn.com/bphoto/El1KekyVFSqrtKLAyjcfNA/ms.jpg",
-#                         "display_phone": "+1-415-775-1028",
-#                         "id": "ryokos-san-francisco",
-#                         "location": {
-#                             "city": "San Francisco",
-#                             "postal_code": "94102",
-#                             "address": [
-#                                 "619 Taylor St"
-#                             ],
-#                             "coordinate": {
-#                                 "latitude": 37.788008004427,
-#                                 "longitude": -122.411782890558
-#                             },
-#                             "state_code": "CA"
-#                         }
-#                     },
-#                     {
-#                         "rating": 4.5,
-#                         "rating_img_url": "https://s3-media2.fl.yelpcdn.com/assets/2/www/img/99493c12711e/ico/stars/v1/stars_4_half.png",
-#                         "review_count": 547,
-#                         "name": "Saru Sushi Bar",
-#                         "rating_img_url_small": "https://s3-media2.fl.yelpcdn.com/assets/2/www/img/a5221e66bc70/ico/stars/v1/stars_small_4_half.png",
-#                         "url": "http://www.yelp.com/biz/saru-sushi-bar-san-francisco?utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=6XuCRI2pZ5pIvcWc9SI3Yg",
-#                         "image_url": "https://s3-media2.fl.yelpcdn.com/bphoto/5-ugy01zjSvudVsfdhmCsA/ms.jpg",
-#                         "display_phone": "+1-415-400-4510",
-#                         "id": "saru-sushi-bar-san-francisco",
-#                         "location": {
-#                             "city": "San Francisco",
-#                             "postal_code": "94114",
-#                             "country_code": "US",
-#                             "address": [
-#                                 "3856 24th St"
-#                             ],
-#                             "coordinate": {
-#                                 "latitude": 37.751706,
-#                                 "longitude": -122.4288283
-#                             },
-#                             "state_code": "CA"
-#                         }
-#                     }
-#                 ]
-#             }
+        # Show Flask errors that happen during tests
+        app.config['TESTING'] = True
 
-#             return search_results
+        # Connect to test database
+        connect_to_db(app, "postgresql:///testdb")
+        db.create_all()
 
-#         self.old_get_yelp_search_results = server.yelp.search_query
-#         server.yelp.search_query = _mock_get_yelp_search_results
+        # Make mocks
+        def _mock_get_yelp_search_results(term, location, category_filter, limit):
+            search_results = {"businesses": [{"rating": 4.5, "rating_img_url": "https://s3-media2.fl.yelpcdn.com/assets/2/www/img/99493c12711e/ico/stars/v1/stars_4_half.png", "review_count": 547, "name": "Saru Sushi Bar", "rating_img_url_small": "https://s3-media2.fl.yelpcdn.com/assets/2/www/img/a5221e66bc70/ico/stars/v1/stars_small_4_half.png", "url": "http://www.yelp.com/biz/saru-sushi-bar-san-francisco?utm_campaign=yelp_api&utm_medium=api_v2_search&utm_source=6XuCRI2pZ5pIvcWc9SI3Yg", "image_url": "https://s3-media2.fl.yelpcdn.com/bphoto/5-ugy01zjSvudVsfdhmCsA/ms.jpg", "display_phone": "+1-415-400-4510", "id": "saru-sushi-bar-san-francisco", "location": {"city": "San Francisco", "postal_code": "94114", "country_code": "US", "address": ["3856 24th St"], "coordinate": {"latitude": 37.751706, "longitude": -122.4288283}, "state_code": "CA"}}]}
+            return search_results
 
-#     def tearDown(self):
-#         """Do at the end of every test."""
+        def _mock_is_open_now_true(keyword, location):
+            return True
 
-#         server.yelp.search_query = self.old_get_yelp_search_results
+        self._old_is_open_now = process_results.is_open_now
+        process_results.is_open_now = _mock_is_open_now_true
+
+        self.old_get_yelp_search_results = server.yelp.search_query
+        server.yelp.search_query = _mock_get_yelp_search_results
+
+    def tearDown(self):
+        """Do at the end of every test."""
+
+        server.yelp.search_query = self.old_get_yelp_search_results
+        process_results.is_open_now = self._old_is_open_now
+
+        db.session.close()
+        db.drop_all()
+
+    def test_search(self):
+        """Tests result of search route."""
+
+        result = self.client.get("/search?keyword=sushi&location=san+francisco")
+        self.assertEqual(result.status_code, 200)
+        self.assertIn('text/html', result.headers['Content-Type'])
+        self.assertIn('<h3 id="restaurant_name">Saru Sushi Bar</h3>', result.data)
+        self.assertIn('<p class="open_status">Open now</p>', result.data)
+        print "search route tested"
 
 
 if __name__ == '__main__':
