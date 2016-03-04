@@ -1,3 +1,5 @@
+"""Twilio API set up and text messaging"""
+
 import os
 import twilio
 from twilio.rest import TwilioRestClient

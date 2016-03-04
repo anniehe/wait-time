@@ -1,3 +1,5 @@
+"""Seed sample data for database"""
+
 from model import WaitTime, connect_to_db, db
 from server import app
 from datetime import datetime

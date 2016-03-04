@@ -1,3 +1,5 @@
+"""Flask server for NomNow!"""
+
 from flask import Flask, render_template, request, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined

@@ -1,3 +1,5 @@
+"""Yelp API Set Up"""
+
 import os
 from yelpapi import YelpAPI
 

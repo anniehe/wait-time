@@ -1,3 +1,5 @@
+"""Google Places API set up and restaurant open status details"""
+
 import requests
 import os
 
