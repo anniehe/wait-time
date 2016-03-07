@@ -3,10 +3,6 @@ html, body {
   width: 100%;
 }
 
-body {
-    padding-top: 50px;
-}
-
 #curious_pusheen {
   position: fixed;
   left: 0px;

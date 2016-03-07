@@ -1,0 +1,36 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+#hungry_pusheen {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url("/static/img/pusheen_eat.gif") 50% 50% no-repeat rgb(253,241,229);
+  display: none;
+}
+
+.center-block {
+  position: absolute;
+  text-align: center;
+  bottom: 45%;
+  margin: auto;
+}
+
+#home-header {
+  padding-bottom: 20px;
+}
+
+#flash {
+  padding-top: 100px;
+  text-align: center;
+}
+
+#report-header {
+  padding-bottom: 50px;
+  text-align: center;
+}
