@@ -41,6 +41,9 @@ body {
 #flash {
   padding-top: 70px;
   text-align: center;
+  font-size: 20px;
+  color: #FFFFFF;
+  font-style: italic;
 }
 
 #report-header {
