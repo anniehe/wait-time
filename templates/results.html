@@ -86,7 +86,6 @@
           </button>
 
           <hr>
-          <br>
         </form>
       </div> <!-- col-xs-12 center -->
     </div> <!-- row -->
@@ -97,10 +96,12 @@
     
     <div class="row">
       <!-- MAP -->
-      <div id="map" class="col-xs-12 col-lg-7"></div>
+      <div id="map-box" class="col-xs-12 col-md-6">
+        <div id="map"></div>
+      </div>
 
       <!-- LIST RESULTS -->
-      <div class="col-xs-12 col-lg-5" id="list">
+      <div class="col-xs-12 col-md-6" id="list">
       {% for restaurant in result %}
         <div id="{{ restaurant['id'] }}" class="result">
           <p class="open_status">{{ restaurant['open_now'] }}</p>

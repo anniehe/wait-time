@@ -93,7 +93,7 @@ def process_wait_time_form():
     search_results = yelp.search_query(term=restaurant_name,
                                        location=location,
                                        category_filter="food,restaurants",
-                                       limit=1)
+                                       limit=10)
 
     # restaurant_info is a dictionary of the restaurant's info
     restaurant_info = search_results['businesses'][0]

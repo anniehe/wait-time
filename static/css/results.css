@@ -14,13 +14,15 @@ html, body {
 }
 
 #map {
-  height: 600px;
-  width: 650px;
-  margin: 10px;
+  height: 500px;
+}
+
+#map-box {
+  padding: 0 15px 15px 15px;
 }
 
 #list {
-  height: 600px;
+  height: 500px;
   overflow: scroll;
 }
 
@@ -73,12 +75,10 @@ html, body {
 }
 
 .result {
-  padding-left: 10px;
-  padding-right:10px;
-  padding-bottom: 10px;
+  padding: 0 10px 10px 10px;
   border: 2px solid #F0F0F0;
   border-radius: 5px;
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #search-header {
@@ -88,12 +88,11 @@ html, body {
 }
 
 .center {
-   text-align: center;
-   margin: auto;
+  text-align: center;
   }
 
 #search-form {
-    vertical-align: top;
+  vertical-align: top;
 }
 
 .btn-group-vertical {
@@ -102,8 +101,13 @@ html, body {
 
 #restaurant_name {
   font-weight: bold;
+  margin-top: 10px;
 }
 
 .highlight {
   color: #e79c0c;
+}
+
+#address {
+  margin-bottom: 5px;
 }
