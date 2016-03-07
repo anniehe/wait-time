@@ -48,7 +48,7 @@ for (key in resultObject['result']) {
 
   $("#" + yelpId).hover(
     function() {
-      $( this ).css("border", "2px solid #00CCFF");
+      $( this ).css("border", "2px solid red");
     }, function() {
       $( this ).css("border", "2px solid #F0F0F0");
     }

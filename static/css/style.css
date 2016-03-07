@@ -5,8 +5,8 @@ html, body {
 
 #hungry_pusheen {
   position: fixed;
-  left: 0px;
-  top: 0px;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   z-index: 9999;
@@ -26,11 +26,33 @@ html, body {
 }
 
 #flash {
-  padding-top: 100px;
+  padding-top: 70px;
   text-align: center;
 }
 
 #report-header {
   padding-bottom: 50px;
   text-align: center;
+}
+
+#logo {
+  margin: 10px;
+}
+
+.navbar-brand {
+  padding: 0;
+}
+
+.navbar {
+  border-bottom: 2px solid red;
+}
+
+.header-text{
+  font-family: Raleway, sans-serif;
+  font-weight: 700;
+}
+
+.light-text{
+  font-family: Raleway, sans-serif;
+  font-weight: 400;
 }
