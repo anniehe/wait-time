@@ -3,6 +3,18 @@ html, body {
   height: 100%;
 }
 
+body {
+  font-family: Raleway, sans-serif;
+}
+
+.header-text{
+  font-weight: 700;
+}
+
+.light-text{
+  font-weight: 400;
+}
+
 #hungry_pusheen {
   position: fixed;
   left: 0;
@@ -23,6 +35,7 @@ html, body {
 
 #home-header {
   padding-bottom: 20px;
+  color: #FFFFFF;
 }
 
 #flash {
@@ -44,15 +57,21 @@ html, body {
 }
 
 .navbar {
-  border-bottom: 2px solid red;
+  background-color: #e73f3f;
+  border-bottom: 1px solid #c31502;
 }
 
-.header-text{
-  font-family: Raleway, sans-serif;
-  font-weight: 700;
+.navbar-default .navbar-nav > li > a {
+  color: #FFFFFF;
 }
 
-.light-text{
-  font-family: Raleway, sans-serif;
-  font-weight: 400;
+.btn-primary {
+  color: #FFFFFF;
+  background-color: #e73f3f;
+  border-color: #c31502;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  color: #FFFFFF;
+  background-color: #c31502;
+  border-color: #c31502;
 }

@@ -37,19 +37,19 @@
           <!-- Sort -->
           <div class="btn-group-vertical" role="group" data-toggle="buttons" aria-label="sorting_by">
             <button id="sort_by_btn" class="btn btn-default btn-sm">Sort</button>
-            <label class="btn btn-danger btn-sm show_radio">
+            <label class="btn btn-primary btn-sm show_radio">
               <input type="radio" name="sort_by" autocomplete="off" 
                 value="recently_reported">Recently Reported
             </label>
-            <label class="btn btn-danger btn-sm show_radio">
+            <label class="btn btn-primary btn-sm show_radio">
               <input type="radio" name="sort_by" autocomplete="off" 
                 value="wait_time">Shortest Wait Time
             </label>
-            <label class="btn btn-danger btn-sm show_radio">
+            <label class="btn btn-primary btn-sm show_radio">
               <input type="radio" name="sort_by" autocomplete="off" 
                 value="rating">Highest Rating
             </label>
-            <label class="btn btn-danger btn-sm show_radio">
+            <label class="btn btn-primary btn-sm show_radio">
               <input type="radio" name="sort_by" autocomplete="off" 
                 value="review_count">Most Reviews
             </label>
@@ -58,30 +58,30 @@
           <!-- Filter -->
           <div class="btn-group-vertical" role="group" data-toggle="buttons" aria-label="filtering_by">
             <button id="filter_by_btn" class="btn btn-default btn-sm">Filter</button>
-            <label class="btn btn-danger btn-sm show_checkbox">
+            <label class="btn btn-primary btn-sm show_checkbox">
               <input type="checkbox" name="filter_by" autocomplete="off" 
                 value="open_now">Open now
             </label>
-            <label class="btn btn-danger btn-sm show_checkbox">
+            <label class="btn btn-primary btn-sm show_checkbox">
               <input type="checkbox" name="filter_by" autocomplete="off" 
                 value="15_min_wait">&le; 15 min
             </label>
-            <label class="btn btn-danger btn-sm show_checkbox">
+            <label class="btn btn-primary btn-sm show_checkbox">
               <input type="checkbox" name="filter_by" autocomplete="off" 
                 value="30_min_wait">&le; 30 min
             </label>
-            <label class="btn btn-danger btn-sm show_checkbox">
+            <label class="btn btn-primary btn-sm show_checkbox">
               <input type="checkbox" name="filter_by" autocomplete="off" 
                 value="45_min_wait">&le; 45 min
             </label>
-              <label class="btn btn-danger btn-sm show_checkbox">
+              <label class="btn btn-primary btn-sm show_checkbox">
               <input type="checkbox" name="filter_by" autocomplete="off" 
                 value="60_min_wait">&le; 60 min
             </label>
           </div>
 
           <!-- Submit -->
-          <button type="submit" class="btn btn-danger btn-sm">
+          <button type="submit" class="btn btn-primary btn-sm">
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
           </button>
 
@@ -113,7 +113,7 @@
                {{ restaurant['location']['postal_code'] }}</p>
           </div>
           <div id="wait_info">
-            <p id="quoted_wait">
+            <p id="quoted_wait" class="highlight">
               <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
               {% if restaurant['quoted_wait_time'] != "Not available" %}
                 <!-- e.g. 45 min -->
@@ -135,15 +135,15 @@
             </p>
             <div class="wait_details wait_box">
               <p>Reported</p>
-              <p class="wait_value">{{ restaurant['timestamp'] }}</p>
+              <p class="wait_value highlight">{{ restaurant['timestamp'] }}</p>
             </div>
             <div class="wait_details wait_box">
               <p>Party Size</p>
-              <p class="wait_value">{{ restaurant['party_size'] }}</p>
+              <p class="wait_value highlight">{{ restaurant['party_size'] }}</p>
             </div>
             <div class="wait_details">
               <p>Parties Ahead</p>
-              <p class="wait_value">{{ restaurant['parties_ahead'] }}</p>
+              <p class="wait_value highlight">{{ restaurant['parties_ahead'] }}</p>
             </div>
           </div> <!-- wait info -->
 

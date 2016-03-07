@@ -30,6 +30,9 @@ html, body {
 
 .open_status {
   text-align: right;
+  font-style: italic;
+  margin-bottom: 0;
+  margin-top: 5px;
 }
 
 #wait_info {
@@ -51,7 +54,7 @@ html, body {
 
 .wait_box {
   padding-right: 5px;
-  border-right: 1px solid black;
+  border-right: 1px solid gray;
 }
 
 .wait_details {
@@ -90,4 +93,12 @@ html, body {
 
 .btn-group-vertical {
   vertical-align: top;
+}
+
+#restaurant_name {
+  font-weight: bold;
+}
+
+.highlight {
+  color: #e79c0c;
 }

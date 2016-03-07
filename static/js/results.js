@@ -16,7 +16,7 @@ $(window).load(function() {
 // If open status is "Open now", change color to green
 $(".open_status").each(function () {
   if ($(this).text() == "Open now") {
-    $(this).css("color", "green");
+    $(this).css("color", "#0acc52");
     $(this).css("font-weight", "bold");
   }
 });
@@ -48,7 +48,7 @@ for (key in resultObject['result']) {
 
   $("#" + yelpId).hover(
     function() {
-      $( this ).css("border", "2px solid red");
+      $( this ).css("border", "2px solid #c31502");
     }, function() {
       $( this ).css("border", "2px solid #F0F0F0");
     }
