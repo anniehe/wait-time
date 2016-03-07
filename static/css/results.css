@@ -62,6 +62,10 @@ html, body {
   text-align: center;
 }
 
+.wait_details > p {
+  font-weight: 700;
+}
+
 .wait_value {
   font-size: 14px;
   font-weight: bold;

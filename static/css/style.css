@@ -73,8 +73,8 @@ body {
   background-color: #e73f3f;
   border-color: #c31502;
 }
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
-  color: #FFFFFF;
-  background-color: #c31502;
-  border-color: #c31502;
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active {
+  color: #FFFFFF !important;
+  background-color: #c31502 !important;
+  border-color: #c31502 !important;
 }
