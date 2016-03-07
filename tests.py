@@ -398,7 +398,7 @@ class IntegerationTestCase(TestCase):
         result = self.client.get("/report")
         self.assertEqual(result.status_code, 200)
         self.assertIn('text/html', result.headers['Content-Type'])
-        self.assertIn('<h2>Report Your Wait Time</h2>', result.data)
+        self.assertIn('<h2 id="report-header" class="header-text">Report Your Wait Time</h2>', result.data)
 
     def test_process_report(self):
         """Tests if wait time form will process the report properly."""
