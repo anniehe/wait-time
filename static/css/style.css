@@ -9,6 +9,7 @@ body {
 
 .header-text{
   font-weight: 700;
+  text-align: center;
 }
 
 .light-text{
@@ -46,8 +47,7 @@ body {
 }
 
 #report-header {
-  padding-bottom: 50px;
-  text-align: center;
+  padding-bottom: 30px;
 }
 
 #logo {

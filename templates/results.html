@@ -10,12 +10,10 @@
 {% block body %}
 
   <!-- SEARCH FORM -->
-
   <div class="container">
     <div class="row">
-      <h2 id="search-header">Find wait times</h2>
       <div class="col-xs-12 center">
-
+        <h2 class="header-text">Find wait times</h2>
         <form id="search-form" class="form-inline" action="/search" method="GET">
           
           <!-- Keyword -->
@@ -92,9 +90,10 @@
   </div> <!-- container -->
 
 
+  <!-- RESULTS-->
   <div class="container">
-    
     <div class="row">
+
       <!-- MAP -->
       <div id="map-box" class="col-xs-12 col-md-6">
         <div id="map"></div>
@@ -102,17 +101,18 @@
 
       <!-- LIST RESULTS -->
       <div class="col-xs-12 col-md-6" id="list">
+
       {% for restaurant in result %}
         <div id="{{ restaurant['id'] }}" class="result">
           <p class="open_status">{{ restaurant['open_now'] }}</p>
           <div id="result-header">
             <h3 id="restaurant_name">{{ restaurant['name'] }}</h3>
-
             <p id="address">{{ restaurant['location']['address'][0] }}<br>
                {{ restaurant['location']['city'] }}, 
                {{ restaurant['location']['state_code'] }} 
                {{ restaurant['location']['postal_code'] }}</p>
           </div>
+
           <div id="wait_info">
             <p id="quoted_wait" class="highlight">
               <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
@@ -156,6 +156,7 @@
           <br>
         </div> <!-- individual result -->
       {% endfor %}
+
       </div>  <!-- list results -->
     </div> <!-- row -->
   </div> <!-- container -->
