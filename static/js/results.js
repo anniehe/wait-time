@@ -31,7 +31,7 @@ $(".open_status").each(function () {
 });
 
 
-// If open status is "Open now unknown", change color to grey
+// If open status is "Open now unknown", change color to gray
 $(".open_status").each(function () {
   if ($(this).text() == "Open now unknown") {
     $(this).css("color", "gray");

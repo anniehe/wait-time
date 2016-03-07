@@ -33,9 +33,9 @@ function initMap() {
 
     // Define the markers for each restaurant
     marker = new google.maps.Marker({
-        position: new google.maps.LatLng(locationLat, locationLng),
-        map: map,
-        title: name
+      position: new google.maps.LatLng(locationLat, locationLng),
+      map: map,
+      title: name
     });
 
     // Extend bounds to include each marker's position
