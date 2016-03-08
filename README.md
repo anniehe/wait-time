@@ -21,11 +21,13 @@ NomNow! is a user-driven web app that provides the ability to make informed deci
 <img src="/static/img/nomnow_ss.png" alt="NomNow!">
 
 ### Results
-<img src="/static/img/results_ss.png" alt="Results">
-<img src="/static/img/results.gif">
+<img src="/static/img/results_list_map.gif" alt="Results">
+
+#### Sort and Filter
+<img src="/static/img/sort_filter.gif" alt="Sort and Filter">
 
 ### Report Your Wait Time
-<img src="/static/img/report_wait.gif">
+<img src="/static/img/report_wait.gif" alt="Report">
 
 ## Author
 Annie He 
