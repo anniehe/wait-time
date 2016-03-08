@@ -24,6 +24,9 @@ NomNow! is a user-driven web app that provides the ability to make informed deci
 <img src="/static/img/results_ss.png" alt="Results">
 <img src="/static/img/results.gif">
 
+### Report Your Wait Time
+<img src="/static/img/report_wait.gif">
+
 ## Author
 Annie He 
 https://www.linkedin.com/in/annieheyt
