@@ -13,7 +13,7 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-12 center">
-        <h2 class="header-text">Find wait times</h2>
+        <h2 id="search-header" class="header-text">Find wait times</h2>
         <form id="search-form" class="form-inline" action="/search" method="GET">
           
           <!-- Keyword -->
@@ -138,7 +138,7 @@
               <p>Reported</p>
               <p class="wait_value highlight">{{ restaurant['timestamp'] }}</p>
             </div>
-            <div class="wait_details wait_box">
+            <div class="wait_details wait_box hidden-xs">
               <p>Party Size</p>
               <p class="wait_value highlight">{{ restaurant['party_size'] }}</p>
             </div>

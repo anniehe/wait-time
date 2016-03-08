@@ -46,7 +46,7 @@ html, body {
   display: inline-block;
   text-align: right;
   float: right;
-  padding-top: 25px;
+  padding-top: 30px;
 }
 
 #quoted_wait {
@@ -104,4 +104,32 @@ html, body {
 
 #address {
   margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 500px) {
+  #quoted_wait {
+    font-size: 20px;
+  }
+  .wait_details > p , #address, .open_status, #yelp_info > p {
+    font-size: 12px;
+  }
+
+  #yelp_info {
+    padding-top: 10px;
+  }
+
+  #restaurant_name {
+    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  #search-header {
+    font-size: 22px;
+    margin-top: 10px;
+  }
+
+  #map {
+    height: 350px;
+  }
 }
