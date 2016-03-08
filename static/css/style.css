@@ -30,7 +30,7 @@ body {
 .center-block {
   position: absolute;
   text-align: center;
-  bottom: 45%;
+  top: 40%;
 }
 
 #home-header {
@@ -76,4 +76,10 @@ body {
   color: #FFFFFF !important;
   background-color: #c31502 !important;
   border-color: #c31502 !important;
+}
+
+@media only screen and (max-width: 500px) {
+  #home-header {
+    font-size: 34px;
+  }
 }
