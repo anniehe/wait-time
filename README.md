@@ -20,6 +20,10 @@ NomNow! is a user-driven web app that provides the ability to make informed deci
 ### Search
 <img src="/static/img/nomnow_ss.png" alt="NomNow!">
 
+### Results
+<img src="/static/img/results_ss.png" alt="Results">
+<img src="/static/img/results.gif">
+
 ## Author
 Annie He 
 https://www.linkedin.com/in/annieheyt
