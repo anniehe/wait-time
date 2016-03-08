@@ -1,6 +1,7 @@
 amqp==1.4.9
 arrow==0.7.0
 blinker==1.4
+coverage==4.0.3
 Flask==0.10.1
 Flask-DebugToolbar==0.10.0
 Flask-SQLAlchemy==2.1
