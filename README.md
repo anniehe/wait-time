@@ -28,7 +28,7 @@ The response from the server renders a map and list of restaurants with the most
 
 #### Sort and Filter
 For more tailored results, users can sort by most recently reported, shortest wait time, highest rating, and most reviews, and filter by open now and wait time (&le; 15min, 30min, 45min, 60min). Pusheen cat can keep users company while the server returns the response.
-<img src="/static/img/sort_filter_test.gif" alt="Sort and Filter">
+<img src="/static/img/sort_filter.gif" alt="Sort and Filter">
 
 ### Reporting Wait Time
 When users report their wait time, the autocomplete feature of the Places Library in Google Maps Javascript API allow for a type-ahead-search to find their restaurant at the correct location.
