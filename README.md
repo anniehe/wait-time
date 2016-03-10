@@ -28,11 +28,11 @@ The response from the server renders a map and list of restaurants with the most
 
 #### Sort and Filter
 For more tailored results, users can sort by most recently reported, shortest wait time, highest rating, and most reviews, and filter by open now and wait time (&le; 15min, 30min, 45min, 60min). Pusheen cat can keep users company while the server returns the response.
-<img src="/static/img/sort_filter.gif" alt="Sort and Filter">
+<img src="/static/img/sort_filter_md.gif" alt="Sort and Filter">
 
 ### Reporting Wait Time
 When users report their wait time, the autocomplete feature of the Places Library in Google Maps Javascript API allow for a type-ahead-search to find their restaurant at the correct location.
-<img src="/static/img/report_wait.gif" alt="Report">
+<img src="/static/img/report_wait_md.gif" alt="Report">
 
 ### Text Reminder
 In addition to reporting wait time, users can enter their phone number to receive text notifications for reminders when their wait time is up, allowing for more control over their time instead of hovering outside a restaurant. This is accomplished using the Twilio API and the Timer class of the Threading module in the Python Standard Library. The Timer object excutes the sending of the reminder text after the specified interval of the reported wait time has elapsed.
