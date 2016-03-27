@@ -4,7 +4,7 @@ NomNow! is a user-driven web app that provides the ability to make informed deci
 ## Technologies Used
 * Python
 * Flask
-* PostgresSQL
+* PostgreSQL
 * SQLAlchemy
 * JavaScript
 * jQuery
@@ -41,7 +41,7 @@ In addition to reporting wait time, users can enter their phone number to receiv
 
 ## Version 2.0
 * Incorporate Celery (asynchronous task queue and task scheduling) and Redis (message broker) to handle the execution of sending text reminders after the quoted wait time has elapsed
-* Improve load time performance
+* Improve load time performance (caching, AJAX)
 * Implement Chart.js to visualize the flow of wait time throughout the day
 
 ## Author
